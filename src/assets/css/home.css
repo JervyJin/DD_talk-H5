@@ -1,0 +1,68 @@
+.homeContainer {
+  background: red;
+  height: 100vh;
+}
+
+.problem {
+  width: 54px;
+  text-align: center;
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  z-index: 44;
+  background: #fff;
+  padding: 5px 0;
+  font-size: 12px;
+  border-top-left-radius: 8px;
+}
+
+.homeContainer #container {
+  /* height: 100vh; */
+  z-index: 33;
+  /* height: 92.6%; */
+  height: 94%;
+}
+
+footer {
+  z-index: 33;
+}
+
+/* 问题抄告 */
+
+.cube-input {
+  border: 1px solid #ebebeb;
+}
+
+.activeText {
+  color: #fc9153;
+}
+
+textarea {
+  height: 120px;
+  font-size: 12px;
+  border: 1px solid #888;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  /* color: #bbb; */
+  color: red;
+}
+
+input::-webkit-input-placeholder {
+  text-align: left;
+}
+
+textarea::-webkit-input-placeholder {
+  line-height: 120px;
+  padding-left: 10px;
+}
+
+.cube-rate-item {
+  width: 22px !important;
+}
+
+#choose {
+  /* color: red; */
+  text-align: right;
+}

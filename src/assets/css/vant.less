@@ -1,0 +1,82 @@
+.van-cell {
+  position: relative;
+  .van-field__body {
+    width: 85%;
+  }
+}
+
+.van-cell:not(:last-child)::after {
+  content: none !important;
+}
+
+// 待处理
+.baseContainer,
+.returnContainer,
+.reviewContainer,
+.infoContainer,
+.baseContainer,
+.multimediaContainer,
+.copyContainer {
+  .van-cell {
+    .van-cell__title {
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  .van-cell:not(:last-child) {
+    border-bottom: 1px solid #bbb;
+  }
+}
+
+// 已退回
+.returnContainer .van-button--info,
+.reviewContainer .van-button--info {
+  width: 100px;
+  background: #fff;
+  border-radius: 6px;
+  height: 26px;
+  line-height: 26px;
+  color: #1989fa;
+}
+// 基本信息
+.detailsContainer .van-tabs__content {
+  padding: 15px 0;
+  background: #e5e5e7;
+}
+// 抄送流程
+.processContainer {
+  .van-step__icon,
+  .van-step__title {
+    text-align: left;
+  }
+}
+// 病害上报
+.copyContainer {
+  .custom-value {
+    // width: 216px;
+    width: 222px;
+  }
+  .van-field {
+    border-bottom: none !important;
+    padding: 0;
+    // width: 150px;
+    .van-field__body {
+      width: 100%;
+      .van-field__control {
+        text-align: left;
+      }
+      textarea {
+        width: 221px;
+        height: 120px !important;
+        text-indent: 10px;
+        position: relative;
+      }
+    }
+  }
+  .van-button {
+    width: 150px;
+    margin: auto;
+  }
+}

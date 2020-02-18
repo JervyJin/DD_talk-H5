@@ -1,0 +1,59 @@
+.container {
+  background-color: #e5e5e7;
+  /*100vh == height:100%,元素撑开与屏幕等高 */
+  min-height: 100vh;
+}
+
+.pagelist .content {
+  width: 93%;
+  background-color: #fff;
+  border-radius: 5px;
+  margin: 11px auto 0;
+}
+
+.pagelist .content:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.dialog {
+  width: 93%;
+  background-color: #fff;
+  margin: auto;
+  padding: 0 0 10px 0;
+  display: none;
+
+  position: absolute;
+  top: 109px;
+  left: 5%;
+}
+
+.dialog h6 {
+  font-weight: bold;
+  text-align: center;
+  padding-top: 8px;
+}
+
+.dialog textarea {
+  width: 83%;
+  height: 120px;
+  font-size: 12px;
+  border: 1px solid #000;
+  margin: 7px 28px 29px 28px;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #bbb;
+  line-height: 120px;
+  padding-left: 10px;
+}
+
+.dialog .sure {
+  width: 78px;
+  line-height: 24px;
+  border: 1px solid #4090f7;
+  color: #4090f7;
+  text-align: center;
+  border-radius: 4px;
+  margin: auto;
+}

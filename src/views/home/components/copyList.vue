@@ -1,4 +1,3 @@
-// TODO:判断rate往左移动/点击为0
 <template>
   <div class="copyContainer">
     <div class="common-div">
@@ -159,7 +158,7 @@
       </div>
       <van-cell>
         <template slot="title">
-          <van-button type="info" @click="submit">驳回</van-button>
+          <van-button type="info" @click="submit">提交</van-button>
         </template>
       </van-cell>
     </div>
@@ -173,6 +172,7 @@ import facility from "./components/facility";
 import parts from "./components/parts";
 import building from "./components/building";
 import damage from "./components/damageType";
+import { getSignature } from "js/util.js";
 import { Toast } from "vant";
 export default {
   components: {
@@ -199,7 +199,18 @@ export default {
       longitude: "", // 经度
       show: false,
       maxDuration: 3,
-      checked: false
+      checked: false,
+      jsApiList: [
+        "runtime.info",
+        // 需要用的
+        "device.geolocation.get",
+        "device.audio.startRecord", // 开始录音
+        "device.audio.stopRecord", // 停止录音
+        "device.audio.onRecordEnd", // 监听停止录音
+        // 'device.audio.download',  //录音下载
+        // 'device.audio.play',  // 播放录音
+        "device.audio.translateVoice" // 语音转文字
+      ]
     };
   },
   methods: {
@@ -222,8 +233,8 @@ export default {
         this.facilitiesDirection = str;
       }
     },
-    // clickRate() {},
     // TODO:数量不能为0
+    // TODO:判断rate往左移动/点击为0
     moveRate(event) {
       console.log("移动了");
       var touch = event.targetTouches[0];
@@ -253,9 +264,34 @@ export default {
       console.log("lat===" + lat);
       console.log("address===" + address);
     },
-
     handleVoice() {
+      alert("鉴权成功");
       alert("点击到了语音识别");
+      // 监听语音自动停止
+      dd.ready(() => {
+        Toast("进来了");
+        
+        // dd.device.audio.onRecordEnd({
+        //   onSuccess: function(res) {
+        //     res.mediaId; // 停止播放音频MediaID
+        //     res.duration; // 返回音频的时长，单位：秒
+        //     Toast("录音停止");
+        //   },
+        //   onFail: function(err) {
+        //     Toast("录音停止失败");
+        //     // 监听开始录音
+        //     dd.device.audio.startRecord({
+        //       maxDuration: this.maxDuration,
+        //       onSuccess: function() {
+        //         Toast("开始录音");
+        //       },
+        //       onFail: function(err) {
+        //         Toast("录音失败");
+        //       }
+        //     });
+        //   }
+        // });
+      });
     },
     submit() {
       // alert("点击到了");
@@ -299,6 +335,9 @@ export default {
           });
       }
     }
+  },
+  created() {
+    getSignature(this.jsApiList);
   },
   watch: {
     // TODO:判断失效(能输入英文、中文)

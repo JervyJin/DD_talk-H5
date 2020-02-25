@@ -6,8 +6,6 @@ import store from './store'
 import axios from "axios";
 import "./assets/css/common.css";
 import "./assets/css/vant.less";
-// import message from 'js/message'
-// Vue.use(message);
 import * as dd from "dingtalk-jsapi"; // 引用钉钉jsapi
 import VueAMap from "vue-amap";
 Vue.use(VueAMap);

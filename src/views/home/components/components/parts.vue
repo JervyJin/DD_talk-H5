@@ -86,17 +86,17 @@ export default {
           }
         });
     },
-    onRefresh() {
-      //下拉刷新
-      // this.isLoading = false;
-      Toast("刷新完成");
-      this.list = [];
-      // if (this.pageNum > 1 || this.total > 0) {
-      //   this.pageNum = 1;
-      //   this.total = 0;
-      // }
-      this.getData();
-    },
+    // onRefresh() {
+    //   //下拉刷新
+    //   // this.isLoading = false;
+    //   Toast("刷新完成");
+    //   this.list = [];
+    //   // if (this.pageNum > 1 || this.total > 0) {
+    //   //   this.pageNum = 1;
+    //   //   this.total = 0;
+    //   // }
+    //   this.getData();
+    // },
     onSelect(item) {
       this.partsName = item;
       this.show = false;

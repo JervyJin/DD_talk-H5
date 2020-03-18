@@ -1,11 +1,11 @@
 <template>
-  <div class='backContainer'>
+  <div class="backContainer">
     <div class="content type">
       <van-cell value="请选择反馈类型" />
       <van-cell>
         <template>
           <span class="custom-title">问题反馈</span>
-          <van-radio-group v-model="radio">
+          <van-radio-group v-model="feedbackType">
             <van-radio name="1"></van-radio>
           </van-radio-group>
         </template>
@@ -13,7 +13,7 @@
       <van-cell>
         <template>
           <span class="custom-title">功能建议</span>
-          <van-radio-group v-model="radio">
+          <van-radio-group v-model="feedbackType">
             <van-radio name="2"></van-radio>
           </van-radio-group>
         </template>
@@ -21,7 +21,7 @@
       <van-cell>
         <template>
           <span class="custom-title">咨询</span>
-          <van-radio-group v-model="radio">
+          <van-radio-group v-model="feedbackType">
             <van-radio name="3"></van-radio>
           </van-radio-group>
         </template>
@@ -38,44 +38,83 @@
         show-word-limit
       />
       <div>
-        <div id="img">
-          <div class="add">
-            <img
-              src="../../assets/img/add.png"
-              alt="添加"
-            />
-          </div>
-        </div>
-        <div>添加图片最多3张</div>
+        <upload :count="3" @getImg="getImg"></upload>
       </div>
     </div>
-    <van-button
-      type="info"
-      class="btn"
-    >提交</van-button>
+    <van-button type="info" class="btn" @click="submit">提交</van-button>
   </div>
 </template>
 <script>
+import upload from "components/upload/upload";
+import { Toast } from "vant";
 export default {
+  components: {
+    upload
+  },
   data() {
     //这里存放数据
     return {
       opinion: "",
-      radio: ""
+      feedbackType: "",
+      imgList: [],
+      userId: "",
+      userName: ""
     };
   },
-  //监听属性 类似于data概念
-  computed: {},
-  //监控data中的数据变化
-  watch: {},
+  mounted() {
+    const _this = this;
+    dd.util.domainStorage.getItem({
+      name: "userid", // 存储信息的key值
+      onSuccess: function(info) {
+        console.log("info", JSON.stringify(info.value));
+        _this.userId = info.value;
+      },
+      onFail: function(err) {
+        alert("获取useridtoken失败，请重新授权");
+        alert(JSON.stringify(err));
+        // this.getCode();
+      }
+    });
+  },
   //方法集合
-  methods: {},
-  //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
-  //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {}
+  methods: {
+    getImg(img) {
+      this.imgList = img;
+    },
+    submit() {
+      this.userId = "013062525840476870";
+      let params = {
+        feedbackType: this.feedbackType,
+        opinion: this.opinion,
+        img1: this.imgList[0],
+        img2: this.imgList[1],
+        img3: this.imgList[2],
+        userId: this.userId,
+        usreName: this.userName
+      };
+      console.log("params", params);
+      if (!this.userId) {
+        Toast("请检查用户Id是否获取到");
+      } else if (!this.feedbackType || !this.opinion) {
+        const message = "意见反馈、反馈类型";
+        Toast("请检查" + message + "是否填写完整");
+      } else if (this.imgList.length == 0) {
+        Toast("至少上传一张图片");
+      } else {
+        this.$http
+          .post("api/feedback/insertOrUpdateFeedback", params)
+          .then(res => {
+            if (res.data.errcode == 0) {
+              Toast.fail(res.data.errmsg);
+            } else {
+              Toast.fail("保存失败", res.data.errmsg);
+            }
+          });
+      }
+    }
+  }
 };
 </script>
-<style lang='less' scoped>
+<style lang="less" scoped>
 @import "../../assets/css/mine.css";
 </style>

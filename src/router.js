@@ -28,14 +28,14 @@ export default new Router({
           },
           meta: { title: "抄告问题" }
         },
-        // {
-        //   path: "/address",
-        //   name: "address",
-        //   component: resolve => {
-        //     require(["components/map/modifyLocation"], resolve);
-        //   },
-        //   meta: { title: "修改位置" }
-        // }
+        {
+          path: "/changeAddress",
+          name: "changeAddress",
+          component: resolve => {
+            require(["components/map/changeMap"], resolve);
+          },
+          meta: { title: "修改位置" }
+        }
       ]
     },
     {

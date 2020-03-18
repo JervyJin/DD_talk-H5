@@ -36,6 +36,7 @@ export default {
             init(o) {
               // o 是高德地图定位插件实例
               o.getCurrentPosition((status, result) => {
+                // console.log("定位");
                 if (result.info == "SUCCESS" && status == "complete") {
                   self.lng = result.position.lng; //设置经度
                   self.lat = result.position.lat; //设置维度
@@ -44,12 +45,7 @@ export default {
                   console.log("lng", self.lng);
                   console.log("lat", self.lat);
                   console.log("地址:", JSON.stringify(result.formattedAddress));
-                  this.$emit(
-                    "getMap",
-                    result.position.lng,
-                    result.position.lat,
-                    JSON.stringify(result.formattedAddress)
-                  );
+
                   self.$nextTick(); //页面渲染好后
                 }
               });

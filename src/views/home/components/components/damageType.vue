@@ -7,7 +7,12 @@
       @click.native="openDialog"
     />
     <!-- 展示数据 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '50%' }">
+    <van-popup
+      v-model="show"
+      position="bottom"
+      :style="{ height: '50%' }"
+      @click-overlay="clickModel"
+    >
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
         <van-list
           v-model="loading"
@@ -21,9 +26,9 @@
           <div class="list-item">
             <van-cell
               :class="{ activeText: damageName == item }"
-              v-for="item in list"
-              :key="item"
-              :title="item + ''"
+              v-for="(item, key) in list"
+              :key="key"
+              :title="item.damageName + ''"
               @click="onSelect(item)"
             />
           </div>
@@ -75,7 +80,7 @@ export default {
             const _this = this;
             if (_this.total < res.data.data.totalNum) {
               obj.forEach(value => {
-                _this.list.push(value.damageName);
+                _this.list.push(value);
               });
               _this.pageNum++;
               _this.total++;
@@ -103,12 +108,14 @@ export default {
       // this.finished = false;
     },
     onSelect(item) {
-      this.damageName = item;
-      console.log("item" + item);
+      this.damageName = item.damageName;
+      console.log("item", item);
       this.show = false;
-      this.$emit("getType", item);
+      this.$emit("getType", item.damageId, item.companyType);
+    },
+    clickModel() {
+      this.list = [];
     }
   }
 };
 </script>
-<style lang="less" scoped></style>

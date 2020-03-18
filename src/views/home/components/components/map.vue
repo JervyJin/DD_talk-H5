@@ -44,7 +44,7 @@ export default {
                   console.log("lng", self.lng);
                   console.log("lat", self.lat);
                   console.log("地址:", JSON.stringify(result.formattedAddress));
-                  this.$emit(
+                  self.$emit(
                     "getMap",
                     result.position.lng,
                     result.position.lat,

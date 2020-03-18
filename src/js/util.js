@@ -36,7 +36,28 @@ function getSignature(jsApiList) {
     console.log('获取jsapi使用权限失败，错误信息 => ' + err)
   })
 }
-
+function getCode() {
+  const _this = this;
+  dd.ready(() => {
+    dd.runtime.permission.requestAuthCode({
+      corpId: 'ding69b3c300f038527a35c2f4657eb6378f',
+      onSuccess: function (result) {
+        console.log("code:", JSON.stringify(result.code));
+        _this.code = result.code;
+        _this.getToken();
+      },
+      onFail: function (err) {
+        alert("fail");
+        alert(JSON.stringify(err));
+      }
+    });
+  });
+  dd.error(error => {
+    alert("error");
+    alert(`dd error: ${JSON.stringify(error)}`);
+  });
+}
 export {
-  getSignature
+  getSignature,
+  getCode
 }

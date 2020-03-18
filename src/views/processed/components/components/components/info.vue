@@ -2,128 +2,18 @@
   <div class="infoContainer container">
     <div class="common-div">
       <div class="pagelist">
-        <div class="content" v-for="(item, key) in resData" :key="key">
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">案卷编号</div>
-              <div class="custom-value">{{ item.reportId }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">设施</div>
-              <div class="custom-value">{{ item.facilitiesName }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">设施方向</div>
-              <div class="custom-value">{{ item.facilitiesDirection }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">部件类型</div>
-              <div class="custom-value">{{ item.partsName }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">构件名称-编号</div>
-              <div class="custom-value">{{ item.treeMap }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">损坏类型</div>
-              <div class="custom-value">{{ item.damageName }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">程度</div>
-              <div class="custom-value">
-                <van-rate v-model="rateValue" readonly />
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">问题数量</div>
-              <div class="custom-value">{{ item.problemNum }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">位置</div>
-              <div class="custom-value">{{ "未知" }}</div>
-            </template>
-          </van-cell>
-          <!-- <van-cell>
-            <template slot="title">
-              <div class="custom-title">问题描述</div>
-              <div class="custom-value">{{ item.problemDescribe }}</div>
-            </template>
-          </van-cell>
-
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">处置方案</div>
-              <div class="custom-value">{{ item.handleMeasures }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">维修方案</div>
-              <div class="custom-value">{{ item.repairMeasures }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">材料建议</div>
-              <div class="custom-value">{{ item.materialProposal }}</div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">维修建议</div>
-              <div class="custom-value">{{ item.repairProposal }}</div>
-            </template>
-          </van-cell> -->
-          <!-- TODO:处置方案、维修方案、材料建议、维修建议展示 -->
-          <div>
+        <div v-if="this.resData">
+          <!-- <div class="content" v-for="(item, key) in resData" :key="key">
             <van-cell>
               <template slot="title">
-                <div class="custom-title">问题描述</div>
-                <div class="custom-value">{{ item.problemDescribe }}</div>
+                <div class="custom-title">案卷编号</div>
+                <div class="custom-value">{{ item.reportId }}</div>
               </template>
             </van-cell>
-
-            <!-- <van-cell>
-              <template slot="title">
-                <div class="custom-title">处置方案</div>
-                <div class="custom-value">{{ item.problemDescribe }}</div>
-              </template>
-            </van-cell>
-            <van-cell>
-              <template slot="title">
-                <div class="custom-title">维修方案</div>
-                <div class="custom-value">{{ item.problemDescribe }}</div>
-              </template>
-            </van-cell>
-            <van-cell>
-              <template slot="title">
-                <div class="custom-title">材料建议</div>
-                <div class="custom-value">{{ item.problemDescribe }}</div>
-              </template>
-            </van-cell>
-            <van-cell>
-              <template slot="title">
-                <div class="custom-title">维修建议</div>
-                <div class="custom-value">{{ item.problemDescribe }}</div>
-              </template>
-            </van-cell> -->
-          </div>
+          </div> -->
+        </div>
+        <div v-else>
+          {{ "暂无数据" }}
         </div>
       </div>
     </div>
@@ -131,32 +21,55 @@
 </template>
 
 <script>
+import { Toast } from "vant";
+
 export default {
   data() {
     return {
       checked: true,
-      rateValue: 0
+      rateValue: 0,
+      infoData: [],
+      resData: []
     };
   },
-  props: ["resData"],
-  created() {
-    // 监听程度的大小并返回到组件上
-    // TODO:无数据也被复制了
-    this.resData.forEach((value, index) => {
-      if (value.damageDegree == 0 || value.damageDegree == null) {
-        // this.rateValue = 0;
-        return false;
-      } else if (value.damageDegree == 1) {
-        this.rateValue = 1;
-      } else if (value.damageDegree == 2) {
-        this.rateValue = 2;
-      } else if (value.damageDegree == 3) {
-        this.rateValue = 3;
-      } else if (value.damageDegree == 4) {
-        this.rateValue = 4;
-      }
-    });
+  watch: {
+    $route(to, from) {
+      this.id = to.query.id;
+      console.log("id,", to.query.id);
+    }
   },
+  created() {
+    this.getInfo();
+    // 监听程度的大小并返回到组件上
+  },
+  mounted() {
+    console.log("hhh", this.infoData);
+  },
+  methods: {
+    getInfo() {
+      const id = this.$route.query.id;
+      this.$http
+        .get("api/report/reportDetailed", {
+          params: {
+            id: id
+          }
+        })
+        .then(res => {
+          // debugger;
+          if (res.data.errcode == 0) {
+            // this.infoData = res.data.data.content;
+            if (res.data.data.content != []) {
+              this.infoData = res.data.data.content;
+              console.log("resData", this.infoData);
+            } else {
+              Toast("信息为空");
+            }
+          } else {
+            Toast.fail("获取信息失败" + res.data.errmsg);
+          }
+        });
+    }
+  }
 };
 </script>
 <style lang="less" scoped>

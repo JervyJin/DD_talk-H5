@@ -3,12 +3,23 @@
     <van-field
       v-model="facilitiesName"
       readonly
-      placeholder="xxx设施"
+      placeholder="请输入设施"
       @click.native="openDialog"
     />
     <!-- 展示数据 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '50%' }">
+    <van-popup
+      v-model="show"
+      position="bottom"
+      :style="{ height: '50%' }"
+      @click-overlay="clickModel"
+    >
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+        <van-search
+          v-model="searchName"
+          placeholder="请输入设施名称"
+          input-align="center"
+          @input="searchFacility"
+        />
         <van-list
           v-model="loading"
           :finished="finished"
@@ -20,12 +31,13 @@
         >
           <div class="list-item">
             <van-cell
-              :class="{ activeText: facilitiesName == item }"
-              v-for="item in list"
-              :key="item"
-              :title="item + ''"
+              :class="{ activeText: facilitiesName == item.facilityName }"
+              v-for="(item, key) in list"
+              :key="key"
               @click="onSelect(item)"
-            />
+            >
+              {{ item.facilityName }}
+            </van-cell>
           </div>
         </van-list>
       </van-pull-refresh>
@@ -34,8 +46,9 @@
 </template>
 <script>
 import { Toast } from "vant";
+import bus from "js/eventBus";
+let id = "";
 export default {
-  components: {},
   data() {
     //这里存放数据
     return {
@@ -59,36 +72,59 @@ export default {
         this.pageNum = 1;
         this.total = 0;
       }
-      this.getData();
     },
+    // 获取所有设施
     getData() {
       this.$http
-        .get("api/selectFacility", {
+        .get("api/selectFacilityByLonLat", {
           params: {
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
+            longitude: this.$parent.longitude,
+            latitude: this.$parent.latitude
+          }
+        })
+        .then(res => {
+          if (res.data.errcode == 0) {
+            this.list = [];
+            if (JSON.stringify(res.data.data.content) === "{}") {
+              Toast("附近无设施");
+              this.finished = true;
+              return false;
+            } else {
+              res.data.data.content.forEach(value => {
+                this.list.push(value);
+              });
+            }
+          } else {
+            // 缺少查询参数
+            Toast(res.data.errmsg);
+            this.finished = true;
+          }
+        })
+        .catch(err => {
+          console.log("err", err);
+        });
+    },
+    // 搜索设施名
+    searchFacility() {
+      this.$http
+        .get("api/selectAllSonFacility", {
+          params: {
             facilityName: this.searchName
           }
         })
         .then(res => {
           if (res.data.errcode == 0) {
-            const obj = res.data.data.content;
-            if (obj.length > 0) {
-              const _this = this;
-              if (_this.total < res.data.data.totalNum) {
-                obj.forEach(value => {
-                  _this.list.push(value.facilityName);
-                });
-                _this.pageNum++;
-                _this.total++;
-                this.loading = false;
-              } else {
-                this.finished = true;
-              }
+            this.list = [];
+            if (JSON.stringify(res.data.data.content) === "[]") {
+              Toast("暂无" + this.searchName + "设施，请添加");
             } else {
-              Toast("搜索的信息不存在");
-              _this.list = [];
+              res.data.data.content.map(value => {
+                this.list.push(value);
+              });
             }
+            this.finished = true;
+          } else {
+            Toast("失败:", res.data.errmsg);
           }
         });
     },
@@ -105,10 +141,15 @@ export default {
       // this.finished = false;
     },
     onSelect(item) {
-      this.facilitiesName = item;
-      console.log("item" + item);
+      this.facilitiesName = item.facilityName;
+      this.$emit("getType", item.facilityName, item.componentDirection);
+      bus.$emit("getParts", item.szysParts);
+      bus.$emit("getComponents", item.szysComponents);
       this.show = false;
-      this.$emit("getType", item);
+    },
+    clickModel() {
+      this.list = [];
+      this.searchName = "";
     }
   }
 };

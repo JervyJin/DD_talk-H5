@@ -2,17 +2,16 @@
   <div class="baseContainer">
     <div class="common-div">
       <div class="pagelist">
-        <router-link
+        <div
           class="content"
           v-for="(item, key) in infoData"
           :key="key"
-          tag="div"
-          to="/dossierDetails"
+          @click="routerDetails(item.reportId)"
         >
           <van-cell>
             <template slot="title">
               <div class="custom-title">{{ item.facilitiesName }}</div>
-              <div class="custom-value">{{ item.damageName }}</div>
+              <div class="custom-value">{{ item.reportId }}</div>
             </template>
           </van-cell>
           <van-cell>
@@ -23,17 +22,11 @@
               <div class="custom-value">{{ item.byTime }}</div>
             </template>
           </van-cell>
-          <div
-            v-if="
-              item.problemDescribe == '' ||
-                item.problemDescribe == null ||
-                item.problemDescribe == undefined
-            "
-          >
+          <div v-if="!item.problemDescribe">
             <van-cell>
               <template slot="title">
                 <div class="custom-title">构件名称-编号</div>
-                <div class="custom-value">{{ item.damageId }}</div>
+                <div class="custom-value">{{ item.componentName }}</div>
               </template>
             </van-cell>
           </div>
@@ -41,7 +34,7 @@
             <van-cell>
               <template slot="title">
                 <div class="custom-title">构件名称-编号</div>
-                <div class="custom-value">{{ item.damageId }}</div>
+                <div class="custom-value">{{ item.componentName }}</div>
               </template>
             </van-cell>
             <van-cell>
@@ -51,7 +44,7 @@
               </template>
             </van-cell>
           </div>
-        </router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -63,9 +56,13 @@ export default {
     return {};
   },
   props: ["infoData"],
-  // created() {
-  //   console.log("infoData", this.infoData);
-  // }
+  methods: {
+    routerDetails(id) {
+      // console.log("详情id", id);
+      // this.$router.
+      this.$router.push({ path: "/dossierDetails", query: { id: id } });
+    }
+  }
 };
 </script>
 <style lang="less" scoped>

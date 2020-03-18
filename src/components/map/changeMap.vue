@@ -7,9 +7,10 @@
     	el-amap：高德地图组件
     -->
     <el-amap
-      vid="amap"
+      vid="amaps"
       :zoom="zoom"
       :plugin="plugin"
+      :events="events"
       class="amap-demo"
       :center="center"
     >
@@ -28,6 +29,15 @@ export default {
       lng: 0,
       lat: 0,
       loaded: false,
+      events: {
+        moveend: () => {},
+        zoomchange: () => {},
+        click: e => {
+          this.center = [e.lnglat.lng, e.lnglat.lat];
+          self.lng = e.lnglat.lng;
+          self.lat = e.lnglat.lat;
+        }
+      },
       plugin: [
         //一些工具插件
         {
@@ -36,21 +46,24 @@ export default {
             init(o) {
               // o 是高德地图定位插件实例
               o.getCurrentPosition((status, result) => {
+                console.log("修改定位");
+                console.log("result", JSON.stringify(result));
+                console.log("status", JSON.stringify(status));
                 if (result.info == "SUCCESS" && status == "complete") {
+                  console.log("修改定位的lng", self.lng);
+                  console.log("修改定位的lat", self.lat);
+                  console.log("地址", JSON.stringify(result.formattedAddress));
                   self.lng = result.position.lng; //设置经度
                   self.lat = result.position.lat; //设置维度
                   self.center = [self.lng, self.lat]; //设置坐标
                   self.loaded = true; //load
-                  console.log("lng", self.lng);
-                  console.log("lat", self.lat);
-                  console.log("地址:", JSON.stringify(result.formattedAddress));
-                  this.$emit(
-                    "getMap",
-                    result.position.lng,
-                    result.position.lat,
+                  self.$nextTick(); //页面渲染好后
+                  self.$emit("getLng", self.lng);
+                  self.$emit("getLat", self.lat);
+                  self.$emit(
+                    "getAddress",
                     JSON.stringify(result.formattedAddress)
                   );
-                  self.$nextTick(); //页面渲染好后
                 }
               });
             }
@@ -58,6 +71,12 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    //把经纬度传到父组件
+    // sendlnglat() {
+    //   this.$emit("register", this.lng, this.lat);
+    // }
   }
 };
 </script>

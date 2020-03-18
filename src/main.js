@@ -28,12 +28,17 @@ import {
   PullRefresh,
   List,
   Popup,
+  Search,
+  NumberKeyboard,
+  Dialog,
+  RadioGroup
 } from 'vant';
 import 'vant/lib/index.css'
 Vue.use(Uploader);
 Vue.use(Icon);
 Vue.use(Cell);
 Vue.use(Field);
+Vue.use(RadioGroup);
 Vue.use(Radio);
 Vue.use(Button);
 Vue.use(Tabbar);
@@ -47,6 +52,9 @@ Vue.use(Rate);
 Vue.use(PullRefresh);
 Vue.use(List);
 Vue.use(Popup);
+Vue.use(Search);
+Vue.use(NumberKeyboard);
+Vue.use(Dialog);
 
 VueAMap.initAMapApiLoader({
   // key: "09a4d90ae2506ceac698060c9598ee80",

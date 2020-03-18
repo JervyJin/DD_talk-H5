@@ -12,12 +12,12 @@
         <div class="name">龚铱白</div>
       </div>
     </header>
-    <div class="content announcement">
+    <!-- <div class="content announcement">
       <van-cell value="通知公告" />
       <van-cell value="关于“建筑固废高效利用关键技术及工程..." />
       <van-cell value="关于“建筑固废高效利用关键技术及工程..." />
       <van-cell value="关于“建筑固废高效利用关键技术及工程..." />
-    </div>
+    </div> -->
     <div class="content-container">
       <div class="content help">
         <van-cell
@@ -31,7 +31,7 @@
             class='iconfont lq-right'
           />
         </van-cell>
-        <van-cell
+        <!-- <van-cell
           title="使用帮助"
           class='iconfont lq-shiyongbangzhu'
           to="/help"
@@ -41,7 +41,7 @@
             style="line-height: inherit;"
             class='iconfont lq-right'
           />
-        </van-cell>
+        </van-cell> -->
         <van-cell
           title="关于我们"
           class='iconfont lq-guanyuwomen'

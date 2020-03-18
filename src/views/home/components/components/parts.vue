@@ -4,19 +4,30 @@
       v-model="partsName"
       readonly
       placeholder="车行道"
-      @click.native="openDialog"
+      @click.native="getData"
     />
     <!-- 展示数据 -->
-    <van-popup v-model="show" position="bottom" :style="{ height: '50%' }">
-      <van-list>
+    <van-popup
+      v-model="show"
+      position="bottom"
+      :style="{ height: '50%' }"
+      @click-overlay="clickModel"
+    >
+      <van-list
+        finished-text="没有更多了"
+        loading-text="加载中，请稍后"
+        error-text="加载失败"
+        :offset="10"
+      >
         <div class="list-item">
           <van-cell
-            v-for="(item, key) in list"
-            :class="{ activeText: partsName == item }"
+            :class="{ activeText: partsName == item.partsName }"
+            v-for="(item, key) in szysComponent"
             :key="key"
-            :title="item"
             @click="onSelect(item)"
-          />
+          >
+            {{ item.partsName }}
+          </van-cell>
         </div>
       </van-list>
     </van-popup>
@@ -31,95 +42,36 @@ export default {
     return {
       partsName: "",
       show: false,
-      list: [],
-      data: [],
       szysComponent: []
-      // loading: false, //是否处于加载状态
-      // finished: false, //是否已加载完所有数据
-      // isLoading: false, //是否处于下拉刷新状态
-      // pageNum: 1,
-      // pageSize: 10,
-      // total: 0,
     };
   },
-  created() {
-    this.getData();
+  mounted() {
+    bus.$on("getParts", partsContent => {
+      this.szysComponent = partsContent;
+      for (let i = 0; i < partsContent.length; i++) {
+        this.partsName = this.szysComponent[0].partsName;
+        this.$emit("getParts", this.szysComponent[0].partsId);
+      }
+    });
   },
-
   //方法集合
   methods: {
-    openDialog() {
-      // this.list = [];
-      this.show = true;
-      // if (this.pageNum > 1 || this.total > 0) {
-      //   this.pageNum = 1;
-      //   this.total = 0;
-      // }
-    },
     getData() {
-      this.$http
-        .get("api/selectParts", {
-          // params: {
-          //   pageNum: this.pageNum,
-          //   pageSize: this.pageSize,
-          // }
-        })
-        .then(res => {
-          if (res.data.errcode == 0) {
-            const obj = res.data.data.content;
-            if (obj.length > 0) {
-              const _this = this;
-              _this.data = obj;
-              // if (_this.total < res.data.data.totalNum) {
-              // TODO:传值给szysComponent再传给 构件名称-编号
-              obj.forEach(value => {
-                _this.list.push(value.partsName);
-                // _this.szysComponent.push(value.szysComponent);
-              });
-              // this.loading = false;
-              // _this.pageNum++;
-              // _this.total++;
-              // } else {
-              //   this.finished = true;
-              // }
-            }
-          }
-        });
-    },
-    // onRefresh() {
-    //   //下拉刷新
-    //   // this.isLoading = false;
-    //   Toast("刷新完成");
-    //   this.list = [];
-    //   // if (this.pageNum > 1 || this.total > 0) {
-    //   //   this.pageNum = 1;
-    //   //   this.total = 0;
-    //   // }
-    //   this.getData();
-    // },
-    onSelect(item) {
-      this.partsName = item;
-      this.show = false;
-      for (let i = 0; i < this.list.length; i++) {
-        for (let j = 0; j < this.data.length; j++) {
-          const self = this;
-          if (self.data[j].partsName == self.partsName) {
-            console.log("szysComponent", self.data[j].szysComponent);
-            if (self.data[j].szysComponent != null) {
-              bus.$emit("getType", self.data[j].szysComponent);
-              return false;
-            } else {
-              Toast("构件名称-编号没有数据");
-              self.data[j].szysComponent = [];
-              return false;
-            }
-          }
-          // return false;
-        }
+      this.show = true;
+      console.log("走到了", this.szysComponent);
+      if (this.szysComponent.length < 0) {
+        Toast("该设施下无部件类型,请添加");
       }
-      this.$emit("getType", item);
+    },
+    onSelect(item) {
+      // console.log("partsItem", item);
+      this.partsName = item.partsName;
+      this.$emit("getParts", item.partsId);
+      this.show = false;
+    },
+    clickModel() {
+      // this.szysComponent = [];
     }
   }
 };
 </script>
-<style lang="less" scoped></style>

@@ -4,38 +4,23 @@
     <div class="tab">
       <van-tabs @click="onClick">
         <van-tab title="待处理" :info="pendingInfo">
-          <pending
-            :infoData="infoData"
-            :startTime="startTime"
-            :endTime="endTime"
-            v-if="infoData.length > 0"
-          ></pending>
+          <pending :infoData="infoData" v-if="infoData.length > 0" />
         </van-tab>
-        <van-tab title="已退回" :info="returnedInfo">
-          <returned
-            :infoData="infoData"
-            :startTime="startTime"
-            :endTime="endTime"
-            v-if="infoData.length > 0"
-          ></returned>
-        </van-tab>
+        <!-- <van-tab title="已退回" :info="returnedInfo">
+          <returned :infoData="infoData" v-if="infoData.length > 0" />
+        </van-tab> -->
         <van-tab title="待审核" :info="reviewInfo">
-          <review
-            :infoData="infoData"
-            :startTime="startTime"
-            :endTime="endTime"
-            v-if="infoData.length > 0"
-          ></review>
+          <review :infoData="infoData" v-if="infoData.length > 0" />
         </van-tab>
       </van-tabs>
     </div>
-    <footer-container></footer-container>
+    <footer-container />
   </div>
 </template>
 
 <script>
 import pending from "./components/pending";
-import returned from "./components/returned";
+// import returned from "./components/returned";
 import review from "./components/review";
 import footerContainer from "components/footer/footer";
 import { Toast } from "vant";
@@ -43,7 +28,7 @@ import { formateDate } from "js/date";
 export default {
   components: {
     pending,
-    returned,
+    // returned,
     review,
     footerContainer
   },
@@ -51,15 +36,30 @@ export default {
     return {
       active: 0,
       infoData: [],
-      pendingInfo: 4,
-      returnedInfo: 4,
-      reviewInfo: 4,
-      startTime: "",
-      endTime: ""
+      pendingInfo: 0,
+      // returnedInfo: 0,
+      reviewInfo: 0,
+      reportUserId: "",
+      reportId: ""
     };
   },
   created() {
     this.getProcessInfo();
+  },
+  mounted() {
+    const _this = this;
+    dd.util.domainStorage.getItem({
+      name: "userid", // 存储信息的key值
+      onSuccess: function(info) {
+        console.log("info", JSON.stringify(info.value));
+        _this.reportUserId = info.value;
+      },
+      onFail: function(err) {
+        alert("获取useridtoken失败，请重新授权");
+        alert(JSON.stringify(err));
+        // this.getCode();
+      }
+    });
   },
   methods: {
     onClick(name) {
@@ -69,40 +69,41 @@ export default {
     getProcessInfo() {
       const self = this;
       this.active = this.active + 1;
-      // console.log("resActive:", this.active);
+      if (!this.reportUserId) {
+        this.reportUserId = "013062525840476870";
+      }
+      // actiove
+      if (this.active == 2) {
+        this.active = 3;
+      }
       this.$http
-        .get("/api/selectReport", {
+        .get("api/report/pendingReport", {
           params: {
-            reportId: "",
+            reportUserId: this.reportUserId,
             reportType: this.active
           }
         })
-        .then(function(res) {
-          const msg = res.data.errmsg;
-          const obj = res.data.data.content;
+        .then(res => {
           if (res.data.errcode === 0) {
-            if (obj.length == 0) {
-              Toast.fail("信息为空,请添加一条数据");
+            if (res.data.data.content.length == 0) {
+              Toast("暂无数据，请去病害上报上传信息");
+              this.infoData = [];
             } else {
-              self.infoData = obj;
-              // console.log("obj:", self.infoData);
-              self.pendingInfo = obj[0].reportCount;
-              self.returnedInfo = obj[0].reportCount1;
-              self.reviewInfo = obj[0].reportCount2;
-              // TODO:第一条无数据也被展示成有数据
-              obj.map(value => {
-                if (value.reportTime === null && value.byTime === null) {
-                  return false;
-                } else {
+              console.log("active", this.active);
+              this.active == 1
+                ? (self.pendingInfo = res.data.data.count)
+                : (self.reviewInfo = res.data.data.count);
+
+              this.infoData = res.data.data.content;
+              res.data.data.content.map(value => {
+                if (value.reportTime != null || value.byTime != null) {
                   value.reportTime = formateDate(value.reportTime);
                   value.byTime = formateDate(value.byTime);
                 }
-                // console.log("startTime:", value.reportTime);
-                // console.log("endTime:", value.byTime);
               });
             }
           } else {
-            self.$warning("获取信息失败" + res.data.errmsg);
+            Toast("获取信息失败" + res.data.errmsg);
           }
         });
     }
@@ -125,42 +126,4 @@ input::-webkit-input-placeholder {
   // flex: 1;
   // margin-bottom: 20px;
 }
-
-// /deep/ .weui-dialog {
-//   padding: 15px;
-//   .vux-x-textarea {
-//     height: 200px;
-//     border: 1px solid #888;
-//     position: relative;
-//     margin-top: 5px;
-
-//     /deep/ textarea {
-//       height: 175px;
-//     }
-
-//     /deep/ .weui-textarea-counter {
-//       color: #b2b2b2;
-//       text-align: right;
-//       position: absolute;
-//       bottom: 5px;
-//       right: 5px;
-//     }
-//   }
-
-//   i {
-//     font-size: 25px;
-//     position: absolute;
-//     right: 72px;
-//     bottom: 49px;
-//   }
-//   .sure {
-//     width: 78px;
-//     line-height: 24px;
-//     border: 1px solid #4090f7;
-//     color: #4090f7;
-//     text-align: center;
-//     border-radius: 4px;
-//     margin: 10px auto 0;
-//   }
-// }
 </style>

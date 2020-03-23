@@ -47,10 +47,12 @@
           </div>
           <van-cell>
             <template slot="title">
-              <van-button type="info" @click="handleBtn('不合格')"
+              <van-button
+                type="info"
+                @click="handleBtn('不合格', item.reportId)"
                 >不合格</van-button
               >
-              <van-button type="info" @click="handleBtn('合格')"
+              <van-button type="info" @click="handleBtn('合格', item.reportId)"
                 >合格</van-button
               >
             </template>
@@ -58,22 +60,90 @@
         </div>
       </div>
     </div>
+
+    <div class="dialog">
+      <van-dialog v-model="rateShow" show-cancel-button>
+        <div class="content">
+          <div class="title">不合格理由</div>
+          <van-field
+            v-model="message"
+            rows="1"
+            autosize
+            label="留言"
+            type="textarea"
+            placeholder="请输入留言"
+          />
+        </div>
+      </van-dialog>
+    </div>
   </div>
 </template>
 
 <script>
+import { Toast, Dialog } from "vant";
 export default {
   data() {
-    return {};
+    return { message: "", rateShow: "" };
   },
   props: ["infoData"],
   methods: {
-    handleBtn(text) {
-      if (text == "不合格") {
-        alert("点击到不合格了");
-      } else {
-        alert("点击到合格了");
-      }
+    getProcessInfo() {
+      this.$http
+        .get("api/report/pendingReport", {
+          params: {
+            reportUserId: "314762512036601402",
+            reportType: 3
+          }
+        })
+        .then(res => {
+          if (res.data.errcode === 0) {
+            if (res.data.data.content.length == 0) {
+              Toast("暂无数据，请去病害上报上传信息");
+              this.infoData = [];
+            } else {
+              console.log("active", this.active);
+              this.active == 1
+                ? (self.pendingInfo = res.data.data.count)
+                : (self.reviewInfo = res.data.data.count);
+
+              this.infoData = res.data.data.content;
+              res.data.data.content.map(value => {
+                if (value.reportTime != null || value.byTime != null) {
+                  value.reportTime = formateDate(value.reportTime);
+                  value.byTime = formateDate(value.byTime);
+                }
+              });
+            }
+          } else {
+            Toast("获取信息失败" + res.data.errmsg);
+          }
+        });
+    },
+    handleBtn(text, id) {
+      let reportType = "";
+      text == "不合格"
+        ? ((reportType = 6), (this.rateShow = true))
+        : (reportType = 7);
+      let params = {
+        reportType: reportType,
+        reportId: id
+      };
+      console.log("params", params);
+      return false;
+      Dialog.confirm({
+        message: "是否确定要进行此操作"
+      })
+        .then(() => {
+          this.$http.post("api/insertOrUpdateReport", params).then(res => {
+            if (res.data.errcode == 0) {
+              Toast("操作成功");
+              this.getProcessInfo();
+            } else {
+              Toast.fail(res.data.errmsg);
+            }
+          });
+        })
+        .catch(() => {});
     }
   }
 };

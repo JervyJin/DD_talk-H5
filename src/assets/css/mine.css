@@ -8,14 +8,27 @@
 }
 
 header {
-  /* height: 3.6rem; */
-  background-color: red;
-  /* padding: 82px 0 0 15px; */
+  /* background: url("../img/bgc.jpg") no-repeat 100% 100%;
+  background-size: contain;
+  color: #000;
+  padding: 27px 0 10px 20px; */
+  background: url("../img/bgc.jpg") no-repeat 100% 100%;
+  background-size: contain;
+  color: #000;
   padding: 27px 0 10px 20px;
-  /* display: flex; */
+  width: 100vw;
+  height: 32vh;
+  position: relative;
 }
 
 header .header {
+  position: absolute;
+  left: 25px;
+  top: 77px;
+  /* width: 16.8%; */
+}
+
+header .img {
   width: 16.8%;
 }
 
@@ -27,7 +40,8 @@ header img {
 
 header .name {
   padding: 11px 0 0 0;
-  text-align: center;
+  /* text-align: center; */
+  text-align: left;
 }
 
 .content {

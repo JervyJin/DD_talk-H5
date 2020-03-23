@@ -7,12 +7,7 @@
       @click.native="getBuilding"
     />
 
-    <van-popup
-      v-model="show"
-      position="bottom"
-      :style="{ height: '50%' }"
-      @click-overlay="clickModel"
-    >
+    <van-popup v-model="show" position="bottom" :style="{ height: '50%' }">
       <van-list>
         <div class="list-item">
           <van-cell
@@ -46,7 +41,9 @@ export default {
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
     bus.$on("getComponents", array => {
+      console.log("接收到的构件", array);
       this.array = array;
+      console.log("array", this.array);
       for (let i = 0; i < array.length; i++) {
         this.componentName = array[0].componentName;
         this.$emit("getType", array[0].componentId);
@@ -56,7 +53,10 @@ export default {
   //方法集合
   methods: {
     getBuilding() {
-      if (this.array.length < 0) {
+      this.show = true;
+      if (this.array.length == 0) {
+        this.array = [];
+        this.componentName = "";
         Toast("该设施下无构件,请添加");
       }
     },
@@ -65,9 +65,6 @@ export default {
       console.log("componentId", item.componentId);
       this.$emit("getType", item.componentId);
       this.show = false;
-    },
-    clickModel() {
-      this.array = [];
     }
   }
 };

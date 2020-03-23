@@ -43,9 +43,6 @@ export default {
       reportId: ""
     };
   },
-  created() {
-    this.getProcessInfo();
-  },
   mounted() {
     const _this = this;
     dd.util.domainStorage.getItem({
@@ -53,11 +50,13 @@ export default {
       onSuccess: function(info) {
         console.log("info", JSON.stringify(info.value));
         _this.reportUserId = info.value;
+        if (info.value) {
+          _this.getProcessInfo();
+        }
       },
       onFail: function(err) {
         alert("获取useridtoken失败，请重新授权");
         alert(JSON.stringify(err));
-        // this.getCode();
       }
     });
   },
@@ -69,12 +68,11 @@ export default {
     getProcessInfo() {
       const self = this;
       this.active = this.active + 1;
-      if (!this.reportUserId) {
-        this.reportUserId = "013062525840476870";
-      }
-      // actiove
       if (this.active == 2) {
         this.active = 3;
+      }
+      if (!this.reportUserId) {
+        this.reportUserId = "013062525840476870";
       }
       this.$http
         .get("api/report/pendingReport", {
@@ -86,10 +84,10 @@ export default {
         .then(res => {
           if (res.data.errcode === 0) {
             if (res.data.data.content.length == 0) {
-              Toast("暂无数据，请去病害上报上传信息");
+              Toast("暂无数据");
               this.infoData = [];
             } else {
-              console.log("active", this.active);
+              // console.log("active", this.active);
               this.active == 1
                 ? (self.pendingInfo = res.data.data.count)
                 : (self.reviewInfo = res.data.data.count);
@@ -125,5 +123,9 @@ input::-webkit-input-placeholder {
   padding-bottom: 55px;
   // flex: 1;
   // margin-bottom: 20px;
+}
+
+.van-tabs__content{
+  
 }
 </style>

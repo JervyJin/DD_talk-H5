@@ -1,31 +1,39 @@
 <template>
+  <!-- TODO:增加删除、上传状态 -->
   <div class="upload">
     <van-uploader
       v-model="fileList"
       :max-count="count"
-      :deletable="false"
+      :maxSize="maxSize"
+      :deletable="true"
       :before-read="beforeRead"
       :after-read="afterRead"
+      @oversize="oversize"
     />
   </div>
 </template>
 
 <script>
 import { Toast } from "vant";
+import lrz from "lrz";
+// 在图片上传时先压缩，压缩成功后再上传服务器
+// 展示上传成功后的图片
+
 export default {
   //import引入的组件需要注入到对象中才能使用
   data() {
     //这里存放数据
     return {
-      fileList: [],
-      array: [],
+      fileList: [], // 这里是要展示的图片url
+      array: [], // 这个array保存的是什么
+      imgList: "",
       maxSize: 201965 // 上传的图片最大接受200K
     };
   },
   props: ["count"],
   //方法集合
   methods: {
-    // 返回布尔值
+    // 图片读取前的操作（判断图片类型）
     beforeRead(file) {
       const reg2 = /^(\s|\S)+(jpg|png|jpeg|JPG|PNG|bmp)+$/;
       if (!reg2.test(file.type)) {
@@ -34,22 +42,60 @@ export default {
       }
       return true;
     },
+    // 图片读取后的操作
     afterRead(file) {
+      file.status = "uploading";
+      file.message = "上传中...";
       let UForm = new FormData();
       UForm.append("file", file.file);
-      Toast.success("开始上传");
-      this.$http.post("api/file/upload", UForm).then(res => {
+      this.uploadImg(UForm, file);
+    },
+    // 上传图片
+    uploadImg(imgFile, file) {
+      // 应该是压缩成功后再上传
+      this.$http.post("api/file/upload", imgFile).then(res => {
         if (res.data.errcode == 0) {
-          Toast.success("上传成功");
+          file.status = "success";
+          file.message = "上传成功";
+          //console.log('res url', res.data.url)
+          //console.log('this file list', this.fileList)
+          // 这里不是往数组中添加了两次
+         // this.fileList.push({
+         //    url: res.data.url
+         // });
+          // 这里的是什么
           this.array.push(res.data.url);
-          this.$emit("getImg", this.array);
+          //console.log("fileList", this.fileList);
+          //console.log("arSrat", this.array);
         } else {
-          Toast.fail("上传失败");
+          file.status = "failed";
+          file.message = "上传失败";
         }
       });
     },
-    oversize() {
-      Toast.fail("超出200k了,即将进行裁剪");
+    // 压缩图片
+    oversize(file) {
+      const that = this;
+      lrz(file.file, {
+        width: 348,
+        height: 196,
+        quality: 0.8 //自定义使用压缩方式
+      })
+        .then(function(rst) {
+          file.status = "uploading";
+          file.message = "上传中...";
+          let UForm = new FormData();
+          UForm.append("file", rst.origin);
+          // 上传图片
+          that.uploadImg(UForm, file);
+        })
+        .catch(function(error) {
+          //失败时执行
+          Toast.fail("压缩失败:" + error);
+        })
+        .always(function() {
+          //不管成功或失败，都会执行
+        });
     }
   }
 };

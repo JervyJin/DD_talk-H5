@@ -75,25 +75,31 @@ export default {
     },
     // 获取所有设施
     getData() {
+      let latitude = "";
+      let longitude = "";
+      if (!this.$parent.longitude || !this.$parent.latitude) {
+        latitude = 120.195662;
+        longitude = 30.39472;
+      } else {
+        latitude = this.$parent.latitude;
+        longitude = this.$parent.longitude;
+      }
+      this.list = [];
       this.$http
         .get("api/selectFacilityByLonLat", {
           params: {
-            longitude: this.$parent.longitude,
-            latitude: this.$parent.latitude
+            longitude: longitude,
+            latitude: latitude
           }
         })
         .then(res => {
           if (res.data.errcode == 0) {
-            this.list = [];
-            if (JSON.stringify(res.data.data.content) === "{}") {
-              Toast("附近无设施");
-              this.finished = true;
-              return false;
-            } else {
-              res.data.data.content.forEach(value => {
-                this.list.push(value);
-              });
-            }
+            // console.log("content", res.data.data.content);
+            res.data.data.content.forEach(value => {
+              // console.log("value", value);
+              this.list.push(value);
+            });
+            this.finished = true;
           } else {
             // 缺少查询参数
             Toast(res.data.errmsg);
@@ -143,8 +149,7 @@ export default {
     onSelect(item) {
       this.facilitiesName = item.facilityName;
       this.$emit("getType", item.facilityName, item.componentDirection);
-      bus.$emit("getParts", item.szysParts);
-      bus.$emit("getComponents", item.szysComponents);
+      bus.$emit("getParts", item.szysPartsVos);
       this.show = false;
     },
     clickModel() {

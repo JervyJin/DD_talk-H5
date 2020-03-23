@@ -2,12 +2,11 @@
   <!-- TODO:父子组件传值未实现 -->
   <div class="container">
     <div class="tab">
-      <van-tabs @click="onClick">
-        <van-tab title="待处理">
-          <!-- <info :resData="infoData" v-if="infoData.length > 0" /> -->
-          <info />
+      <van-tabs>
+        <van-tab title="基本信息">
+          <info :infoData="infoData" v-if="infoData.length > 0" />
         </van-tab>
-        <van-tab title="待审核">
+        <van-tab title="抄送流程">
           <process :infoData="infoData" v-if="infoData.length > 0" />
         </van-tab>
       </van-tabs>
@@ -18,11 +17,16 @@
 <script>
 import info from "./components/info";
 import process from "./components/process";
-import { formateDate } from "js/date";
+import { Toast } from "vant";
 export default {
   components: {
     info,
     process
+  },
+  watch: {
+    $route(to, from) {
+      this.id = to.query.id;
+    }
   },
   data() {
     return {
@@ -30,10 +34,27 @@ export default {
       infoData: []
     };
   },
+  mounted() {
+    this.getInfo();
+  },
   methods: {
-    onClick(name) {
-      this.active = name;
-      // this.getProcessInfo();
+    getInfo() {
+      if (!this.$route.query.id) {
+        this.$route.query.id = "013062525840476870";
+      }
+      this.$http
+        .get("api/report/reportDetailed", {
+          params: {
+            id: this.$route.query.id
+          }
+        })
+        .then(res => {
+          if (res.data.errcode == 0) {
+            res.data.data.content != []
+              ? this.infoData.push(res.data.data.content)
+              : Toast("无数据");
+          }
+        });
     }
   }
 };

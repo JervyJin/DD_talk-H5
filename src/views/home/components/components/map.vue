@@ -7,6 +7,7 @@
     	el-amap：高德地图组件
     -->
     <el-amap
+    v-if="text"
       vid="amap"
       :zoom="zoom"
       :plugin="plugin"
@@ -20,6 +21,7 @@
 
 <script>
 export default {
+  props: ['text'],
   data() {
     let self = this;
     return {
@@ -41,9 +43,9 @@ export default {
                   self.lat = result.position.lat; //设置维度
                   self.center = [self.lng, self.lat]; //设置坐标
                   self.loaded = true; //load
-                  console.log("lng", self.lng);
-                  console.log("lat", self.lat);
-                  console.log("地址:", JSON.stringify(result.formattedAddress));
+                  // console.log("lng", self.lng);
+                  // console.log("lat", self.lat);
+                  // console.log("地址:", JSON.stringify(result.formattedAddress));
                   self.$emit(
                     "getMap",
                     result.position.lng,

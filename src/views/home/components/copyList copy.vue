@@ -15,12 +15,12 @@
             <template slot="title">
               <div class="custom-title">位置</div>
               <div class="custom-value address">
-                <mapContainer ref="map" @getMap="getMap" :text='text'/>
+                <mapContainer ref="map" @getMap="getMap" />
               </div>
             </template>
-            <router-link to="changeAddress" tag="div" @click="changeText">修改位置</router-link>
+            <div>修改位置</div>
           </van-cell>
-          <van-cell>    
+          <van-cell>
             <template slot="title">
               <div class="custom-title">设施</div>
               <div class="custom-value">
@@ -255,7 +255,6 @@ export default {
   },
   data() {
     return {
-      text : true ,
       dateShow: false, //天数数字键盘
       problemNumShow: false, //问题数量数字键盘
       rateShow: false, //程度级别
@@ -299,16 +298,13 @@ export default {
      * 2. getToken()  --> 获取accessTOken
      * 3. 通过accessToken和code去获取userId
      */
-    changeText(){
-      this.text = false;
-    },
     getCodes() {
       const _this = this;
       dd.ready(() => {
         dd.runtime.permission.requestAuthCode({
           corpId: _this.corpId,
           onSuccess: function(result) {
-            // console.log("code:", JSON.stringify(result.code));
+            console.log("code:", JSON.stringify(result.code));
             _this.code = result.code;
             _this.getToken();
           },
@@ -334,17 +330,13 @@ export default {
         })
         .then(res => {
           if (res.data.errcode == 0) {
-            // console.log("accessToken", res.data.data.content.accessToken);
+            console.log("accessToken", res.data.data.content.accessToken);
             this.getUserId(res.data.data.content.accessToken);
           }
         });
     },
     // 获取userId
     getUserId(token) {
-      if (!token || !this.code) {
-        this.code = "ac95d0e845c3302e9d999f31aef2c869";
-        token = "daac5e9879473cd198e6d627493ee12b";
-      }
       this.$http
         .get("api/DDLogin/getUserid", {
           params: {
@@ -353,7 +345,6 @@ export default {
           }
         })
         .then(res => {
-          console.log("res", res);
           if (res.data.data.content.errcode == 0) {
             // alert("userid获取成功");
             setInfo("userid", res.data.data.content.userid);
@@ -399,7 +390,6 @@ export default {
       this.address = address;
     },
     getImg(img) {
-      console.log("img", img);
       this.imgList = img;
     },
     submit() {

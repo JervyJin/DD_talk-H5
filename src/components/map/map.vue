@@ -12,6 +12,7 @@
       :plugin="plugin"
       class="amap-demo"
       :center="center"
+      v-if="text"
     >
       <el-amap-marker :position="center" vid="amapMarker"></el-amap-marker>
     </el-amap>
@@ -56,9 +57,18 @@ export default {
             }
           }
         }
-      ]
+      ],
+      text: true
     };
+  },
+  mounted() {
+    // text = false;
   }
+  // destroyed() {
+  //   if (!!this.amap) {
+  //     this.amap.destroy();
+  //   }
+  // }
 };
 </script>
 

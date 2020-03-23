@@ -47,6 +47,7 @@
 <script>
 import upload from "components/upload/upload";
 import { Toast } from "vant";
+import { deleteInfo, getInfo, setInfo } from "js/dd";
 export default {
   components: {
     upload
@@ -58,23 +59,51 @@ export default {
       feedbackType: "",
       imgList: [],
       userId: "",
-      userName: ""
+      userName: "",
+      phoneNumber: ""
     };
   },
   mounted() {
-    const _this = this;
-    dd.util.domainStorage.getItem({
-      name: "userid", // 存储信息的key值
-      onSuccess: function(info) {
-        console.log("info", JSON.stringify(info.value));
-        _this.userId = info.value;
-      },
-      onFail: function(err) {
-        alert("获取useridtoken失败，请重新授权");
-        alert(JSON.stringify(err));
-        // this.getCode();
-      }
-    });
+    if (!this.userId || !this.userName || !this.phoneNumber) {
+      const _this = this;
+      dd.util.domainStorage.getItem({
+        name: "userid", // 存储信息的key值
+        onSuccess: function(info) {
+          // console.log("info", JSON.stringify(info.value));
+          _this.userId = info.value;
+        },
+        onFail: function(err) {
+          alert("获取useridtoken失败，请重新授权");
+          alert(JSON.stringify(err));
+        }
+      });
+      dd.util.domainStorage.getItem({
+        name: "mobile", // 存储信息的key值
+        onSuccess: function(info) {
+          // console.log("info", JSON.stringify(info.value));
+          _this.phoneNumber = info.value;
+        },
+        onFail: function(err) {
+          alert("获取useridtoken失败，请重新授权");
+          alert(JSON.stringify(err));
+        }
+      });
+      dd.util.domainStorage.getItem({
+        name: "userName", // 存储信息的key值
+        onSuccess: function(info) {
+          // console.log("info", JSON.stringify(info.value));
+          _this.userName = info.value;
+        },
+        onFail: function(err) {
+          alert("获取useridtoken失败，请重新授权");
+          alert(JSON.stringify(err));
+        }
+      });
+    }
+
+    // console.log("userid:", this.userId);
+    // console.log("phoneNumber:", this.phoneNumber);
+    // console.log("userName:", this.userName);
   },
   //方法集合
   methods: {
@@ -83,6 +112,8 @@ export default {
     },
     submit() {
       this.userId = "013062525840476870";
+      this.userName = "龚铱白";
+      this.phoneNumber = "13666683140";
       let params = {
         feedbackType: this.feedbackType,
         opinion: this.opinion,
@@ -90,9 +121,11 @@ export default {
         img2: this.imgList[1],
         img3: this.imgList[2],
         userId: this.userId,
-        usreName: this.userName
+        userName: this.userName,
+        phoneNumber: this.phoneNumber
       };
       console.log("params", params);
+      // return false;
       if (!this.userId) {
         Toast("请检查用户Id是否获取到");
       } else if (!this.feedbackType || !this.opinion) {
@@ -105,7 +138,7 @@ export default {
           .post("api/feedback/insertOrUpdateFeedback", params)
           .then(res => {
             if (res.data.errcode == 0) {
-              Toast.fail(res.data.errmsg);
+              Toast(res.data.errmsg);
             } else {
               Toast.fail("保存失败", res.data.errmsg);
             }

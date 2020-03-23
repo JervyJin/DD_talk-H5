@@ -7,12 +7,7 @@
       @click.native="getData"
     />
     <!-- 展示数据 -->
-    <van-popup
-      v-model="show"
-      position="bottom"
-      :style="{ height: '50%' }"
-      @click-overlay="clickModel"
-    >
+    <van-popup v-model="show" position="bottom" :style="{ height: '50%' }">
       <van-list
         finished-text="没有更多了"
         loading-text="加载中，请稍后"
@@ -47,10 +42,11 @@ export default {
   },
   mounted() {
     bus.$on("getParts", partsContent => {
+      console.log("接收到的parts", partsContent);
       this.szysComponent = partsContent;
       for (let i = 0; i < partsContent.length; i++) {
-        this.partsName = this.szysComponent[0].partsName;
-        this.$emit("getParts", this.szysComponent[0].partsId);
+        this.partsName = partsContent[0].partsName;
+        bus.$emit("getComponents", partsContent[0].szysComponent);
       }
     });
   },
@@ -58,19 +54,16 @@ export default {
   methods: {
     getData() {
       this.show = true;
-      console.log("走到了", this.szysComponent);
-      if (this.szysComponent.length < 0) {
+      if (this.szysComponent.length == 0) {
         Toast("该设施下无部件类型,请添加");
       }
     },
     onSelect(item) {
-      // console.log("partsItem", item);
+      console.log("szysComponent", item.szysComponent);
+      bus.$emit("getComponents", item.szysComponent);
       this.partsName = item.partsName;
       this.$emit("getParts", item.partsId);
       this.show = false;
-    },
-    clickModel() {
-      // this.szysComponent = [];
     }
   }
 };

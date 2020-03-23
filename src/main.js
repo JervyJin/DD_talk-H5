@@ -31,7 +31,8 @@ import {
   Search,
   NumberKeyboard,
   Dialog,
-  RadioGroup
+  RadioGroup,
+  NavBar
 } from 'vant';
 import 'vant/lib/index.css'
 Vue.use(Uploader);
@@ -55,6 +56,7 @@ Vue.use(Popup);
 Vue.use(Search);
 Vue.use(NumberKeyboard);
 Vue.use(Dialog);
+Vue.use(NavBar);
 
 VueAMap.initAMapApiLoader({
   // key: "09a4d90ae2506ceac698060c9598ee80",

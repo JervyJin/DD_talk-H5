@@ -199,6 +199,8 @@ del {
 
 .footer {
   flex: 1;
+  /* background: red;
+  height: 7%; */
 }
 
 .active a {

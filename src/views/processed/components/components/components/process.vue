@@ -1,14 +1,14 @@
 <template>
   <div class="processContainer">
     <van-steps direction="vertical" :active="choosrActive">
-      <van-step v-for="(item, i) in data" :key="i">
+      <van-step v-for="(item, i) in infoData" :key="i">
         <div class="flex jc-sb">
-          <h6>{{ item.createName }}</h6>
-          <div>{{ item.createTime }}</div>
+          <h6>{{ item.reportType }}</h6>
+          <div>{{ item.reportTime }}</div>
         </div>
         <p>{{ item.processId }}</p>
         <p>
-          问题备注：<span>{{ item.reportId }}</span>
+          问题备注：<span>{{ item.problemDescribe }}</span>
         </p>
       </van-step>
     </van-steps>
@@ -24,35 +24,28 @@ export default {
       choosrActive: "1"
     };
   },
+  props: ["infoData"],
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.getProcess();
-  },
-  //方法集合
-  methods: {
-    getProcess() {
-      // TODO:要根据上一个页面点击的Id传值
-      const id = 1;
-      this.$http
-        .get("/api/selectProcess", {
-          params: {
-            reportId: "",
-            reportId: id
-          }
-        })
-        .then(res => {
-          if (res.status == 200 && res.data.errcode == 0) {
-            console.log(res.data.data.content);
-            const _this = this;
-            res.data.data.content.forEach(value => {
-              value.createTime = formateDate(value.createTime);
-            });
-            // createTime
-            _this.data = res.data.data.content;
-          }
-        });
+    if (this.infoData[0].reportType == 1) {
+      this.infoData[0].reportType = "待处理";
+    } else if (this.infoData[0].reportType == 2) {
+      this.infoData[0].reportType == "已退回";
+    } else if (this.infoData[0].reportType == 3) {
+      this.infoData[0].reportType == "待审核";
+    } else if (this.infoData[0].reportType == 4) {
+      this.infoData[0].reportType == "通过";
+    } else if (this.infoData[0].reportType == 5) {
+      this.infoData[0].reportType == "驳回";
+    } else if (this.infoData[0].reportType == 6) {
+      this.infoData[0].reportType == "不合格";
+    } else {
+      this.infoData[0].reportType == "合格";
     }
+
+    this.infoData[0].reportTime = formateDate(this.infoData[0].reportTime);
   }
+  //方法集合
 };
 </script>
 <style lang="less" scoped>

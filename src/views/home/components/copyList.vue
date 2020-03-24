@@ -18,9 +18,11 @@
                 <mapContainer ref="map" @getMap="getMap" :text='text'/>
               </div>
             </template>
-            <router-link to="changeAddress" tag="div" @click="changeText">修改位置</router-link>
+            <div>
+              <router-link to="changeAddress" tag="div">修改位置</router-link>
+            </div>
           </van-cell>
-          <van-cell>    
+          <van-cell>
             <template slot="title">
               <div class="custom-title">设施</div>
               <div class="custom-value">
@@ -334,7 +336,7 @@ export default {
         })
         .then(res => {
           if (res.data.errcode == 0) {
-            // console.log("accessToken", res.data.data.content.accessToken);
+            // console.log("accessToken", res.data.data.content.accessToken)
             this.getUserId(res.data.data.content.accessToken);
           }
         });
@@ -345,6 +347,8 @@ export default {
         this.code = "ac95d0e845c3302e9d999f31aef2c869";
         token = "daac5e9879473cd198e6d627493ee12b";
       }
+      console.log('token',token);
+      console.log('code',this.code);
       this.$http
         .get("api/DDLogin/getUserid", {
           params: {
@@ -353,14 +357,16 @@ export default {
           }
         })
         .then(res => {
-          console.log("res", res);
-          if (res.data.data.content.errcode == 0) {
+          console.log(res);
+          console.log('11111111111111111111');
+          //setInfo(res);
+          if (res.data.data.content.errcode === 0) {
             // alert("userid获取成功");
             setInfo("userid", res.data.data.content.userid);
             this.reportUserId = res.data.data.content.userid;
           } else {
-            Toast.fail("userid错误:", res.data.data.errmsg);
-            console.log("userid错误:", res.data.data.errmsg);
+            Toast.fail(res.data.data.content.errmsg);
+            console.log("userid错误:", res.data.data.content.errmsg);
           }
         });
     },

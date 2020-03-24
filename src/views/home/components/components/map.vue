@@ -1,13 +1,12 @@
 <template>
   <div class="amap-page-container">
-    <!-- 
-    	zoom：放缩程度 , 
+    <!--
+    	zoom：放缩程度 ,
     	plugin：data中有定义，是一些插件，如工具栏等等，
     	center：定位经纬度位置
     	el-amap：高德地图组件
     -->
     <el-amap
-    v-if="text"
       vid="amap"
       :zoom="zoom"
       :plugin="plugin"

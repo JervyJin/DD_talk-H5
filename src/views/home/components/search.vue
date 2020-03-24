@@ -9,7 +9,7 @@
         @search="onSearch"
         @cancel="onCancel"
       />
-
+      {{content}}
       <van-list
         v-model="loading"
         :finished="finished"
@@ -24,12 +24,14 @@
 </template>
 <script>
 import { Toast } from "vant";
+import { setInfo, getInfo } from "js/dd";
 export default {
   components: {},
   data() {
     return {
       value: "",
       list: [],
+      content: [],
       loading: false,
       finished: true,
       finishedText: "",
@@ -38,12 +40,26 @@ export default {
     };
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+    getInfo('searchContentArr24').then(res => {
+      this.content = JSON.parse(res.value).list;
+    })
+  },
   //方法集合
   methods: {
     onLoad() {},
     onSearch(val) {
-      Toast(val);
+      getInfo('searchContentArr24').then(res => {
+        if(res.value){
+          alert();
+          let newArr = JSON.parse(res.value).list;
+          newArr.push(val);
+          setInfo('searchContentArr24', JSON.stringify({list: newArr}));
+          this.content = newArr;
+        } else{
+          setInfo('searchContentArr24', JSON.stringify({list: [val]}));
+        }
+      })
     },
     onCancel() {
       // Toast("取消");

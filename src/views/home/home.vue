@@ -9,11 +9,11 @@
           @click="handleSearch"
         />
       </div>
-      <map-container></map-container>
+      <map-container :myId="'vueMap1'"></map-container>
     </div>
     <div class="list">
       <router-link to="/copyList">
-        <img src="@/assets/img/icon-bhcs.png" alt="病害抄送" />
+        <img src="@/assets/img/icon-bhcs.png" alt="病害抄送"  @click="changeShowMap"/>
       </router-link>
     </div>
     <footer-container></footer-container>
@@ -26,10 +26,18 @@ import footerContainer from "components/footer/footer";
 import { Toast } from "vant";
 export default {
   components: { footerContainer, mapContainer },
+  data(){
+    return {
+      showMap: true
+    }
+  },
   methods: {
     handleSearch() {
       this.$router.push("/search");
       // Toast("哈哈哈哈");
+    },
+    changeShowMap(){
+      this.showMap = false;
     }
   }
 };

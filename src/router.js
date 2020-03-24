@@ -40,7 +40,7 @@ export default new Router({
           path: "/changeAddress",
           name: "changeAddress",
           component: resolve => {
-            require(["components/map/map"], resolve);
+            require(["views/updateMap/index"], resolve);
           },
           meta: { title: "修改位置" }
         }

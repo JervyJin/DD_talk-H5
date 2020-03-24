@@ -1,8 +1,10 @@
-import { request } from './api'
-import { get_token, get_userid, get_userInfo } from './url'
-import { corpId, appkey, appsecret } from './config'
-import { Toast } from 'vant'
+import {request} from './api'
+import {get_token, get_userid, get_userInfo} from './url'
+import {corpId, appkey, appsecret} from './config'
+import {Toast} from 'vant'
+
 let code = ' '
+
 // 获取code
 function getCode() {
     dd.ready(() => {
@@ -28,6 +30,7 @@ function getCode() {
     console.log('returncode2:', code)
     // return code;
 }
+
 // 获取accessToken
 function getToken() {
     let params = {
@@ -49,6 +52,7 @@ function getToken() {
 
         })
 }
+
 // 存取缓存
 function setInfo(name, value) {
     dd.util.domainStorage.setItem({
@@ -64,22 +68,18 @@ function setInfo(name, value) {
         }
     });
 }
+
 // 获取缓存
-function getInfo(name) {
-    dd.util.domainStorage.getItem({
+ function getInfo(name) {
+    return dd.util.domainStorage.getItem({
         name: name, // 存储信息的key值
         onSuccess: function (info) {
-            Toast(name + '获取成功')
-            console.log(name + "获取的值:", JSON.stringify(info.value));
-            value = info.value
-            console.log('获取到' + name + '的值:' + value)
         },
         onFail: function (err) {
-            Toast.fail(name + '获取失败:' + JSON.stringify(err))
-            console.log(name + '获取失败:' + JSON.stringify(err))
         }
     });
 }
+
 // 删除缓存
 function deleteInfo(name) {
     console.log('删除的name', name)
@@ -87,7 +87,7 @@ function deleteInfo(name) {
         name: name, // 存储信息的key值
         onSuccess: function (info) {
             Toast(name + '删除成功')
-            console.log(name + '删除成功' )
+            console.log(name + '删除成功')
         },
         onFail: function (err) {
             Toast.fail(name + '删除失败' + JSON.stringify(err))
@@ -95,8 +95,6 @@ function deleteInfo(name) {
         }
     });
 }
-
-
 
 
 export {

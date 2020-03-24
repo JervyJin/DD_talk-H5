@@ -1,18 +1,11 @@
 <template>
-  <div class="amap-page-container">
-    <!-- 
-    	zoom：放缩程度 , 
-    	plugin：data中有定义，是一些插件，如工具栏等等，
-    	center：定位经纬度位置
-    	el-amap：高德地图组件
-    -->
+  <div class="amap-page-container" style="width: 100vw; height: 100vh">
     <el-amap
-      vid="amap"
+     :vid="myId"
       :zoom="zoom"
       :plugin="plugin"
       class="amap-demo"
       :center="center"
-      v-if="text"
     >
       <el-amap-marker :position="center" vid="amapMarker"></el-amap-marker>
     </el-amap>
@@ -21,6 +14,7 @@
 
 <script>
 export default {
+  props: ['myId'],
   data() {
     let self = this;
     return {
@@ -45,20 +39,19 @@ export default {
                   console.log("lng", self.lng);
                   console.log("lat", self.lat);
                   console.log("地址:", JSON.stringify(result.formattedAddress));
-                  this.$emit(
+                  /*this.$emit(
                     "getMap",
                     result.position.lng,
                     result.position.lat,
                     JSON.stringify(result.formattedAddress)
-                  );
+                  );*/
                   self.$nextTick(); //页面渲染好后
                 }
               });
             }
           }
         }
-      ],
-      text: true
+      ]
     };
   },
   mounted() {
@@ -72,16 +65,7 @@ export default {
 };
 </script>
 
-<style>
-.amap-page-container {
-  position: relative;
-  width: 100%;
-  margin-top: 0.03rem;
-  /* height: 94%; */
-  height: 100%;
-  font-size: 0.12rem;
-  color: #fff;
-}
+<style scoped>
 
 .amap-geolocation-con {
   left: 86% !important;

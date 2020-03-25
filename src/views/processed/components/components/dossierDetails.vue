@@ -43,16 +43,18 @@ export default {
         this.$route.query.id = "013062525840476870";
       }
       this.$http
-        .get("api/report/reportDetailed", {
+        .get(`${url}/report/reportDetailed`, {
           params: {
             id: this.$route.query.id
           }
         })
         .then(res => {
-          if (res.data.errcode == 0) {
+          if (res.data.errcode === 0) {
             res.data.data.content != []
               ? this.infoData.push(res.data.data.content)
               : Toast("无数据");
+          } else {
+            Toast("无数据");
           }
         });
     }

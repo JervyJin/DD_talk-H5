@@ -1,240 +1,244 @@
 <template>
-  <div class="copyContainer">
-    <div class="common-div">
-      <div class="pagelist">
-        <div class="content">
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">问题图</div>
-              <div class="custom-value">
-                <upload :count="6" @getImg="getImg"></upload>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell class="display-block">
-            <template slot="title">
-              <div class="custom-title">位置</div>
-              <div class="custom-value address">
-                <mapContainer ref="map" @getMap="getMap" :text='text'/>
-              </div>
-            </template>
-            <div>
-              <router-link to="changeAddress" tag="div">修改位置</router-link>
-            </div>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">设施</div>
-              <div class="custom-value">
-                <facility @getType="getFacility"></facility>
-              </div>
-            </template>
-          </van-cell>
-          <!-- <van-cell>
-            <template slot="title">
-              <div class="custom-title">桩号</div>
-              <div class="custom-value"></div>
-            </template>
-          </van-cell> -->
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">设施方向</div>
-              <div class="custom-value">
-                <div class="flex">
-                  <van-field
-                    v-model="facilitiesDirection"
-                    id="bearing"
-                    readonly=""
-                  />
-                  <div>
-                    <van-checkbox
-                      id="check"
-                      v-model="oppositeLane"
-                      shape="square"
-                    ></van-checkbox>
-                  </div>
-                  <van-field id="choose" v-model="position" readonly />
+  <keep-alive>
+    <div class="copyContainer">
+      <div class="common-div">
+        <div class="pagelist">
+          <div class="content">
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">问题图</div>
+                <div class="custom-value">
+                  <upload :count="6" @getImg="getImg"></upload>
                 </div>
+              </template>
+            </van-cell>
+            <van-cell class="display-block">
+              <template slot="title">
+                <div class="custom-title">位置</div>
+                <div class="custom-value address">
+                  <mapContainer ref="map"
+                                @getMap="getMap"
+                                :text='text'
+                                :init="init"/>
+                </div>
+              </template>
+              <div>
+                <router-link to="changeAddress" tag="div">修改位置</router-link>
               </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">部件类型</div>
-              <div class="custom-value">
-                <parts @getParts="getParts"></parts>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">构件名称-编号</div>
-              <div class="custom-value">
-                <building @getType="getBuilding"></building>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">损坏类型</div>
-              <div class="custom-value">
-                <damage @getType="getDamage"></damage>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">
-                程度
-                <i class="iconfont lq-wenhao" @click="showRate"></i>
-              </div>
-              <div class="custom-value">
-                <van-rate v-model="damageDegree" :count="4" touchable />
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">问题数量</div>
-              <div class="custom-value flex">
-                <van-field
-                  readonly
-                  clickable
-                  :value="problemNum"
-                  placeholder="请输入问题数量"
-                  @touchstart.native.stop="problemNumShow = true"
-                />
-                <van-number-keyboard
-                  v-model="problemNum"
-                  :show="problemNumShow"
-                  extra-key="."
-                  close-button-text="完成"
-                  @blur="close('问题数量')"
-                />
-                <div>{{ companyType }}</div>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">处理时限</div>
-              <div class="custom-value flex">
-                <van-field
-                  readonly
-                  clickable
-                  placeholder="请输入处理时限"
-                  :value="limitTime"
-                  @touchstart.native.stop="dateShow = true"
-                />
-                <van-number-keyboard
-                  v-model="limitTime"
-                  :show="dateShow"
-                  close-button-text="完成"
-                  @blur="close('处理时限')"
-                />
-                <div>天</div>
-              </div>
-            </template>
-          </van-cell>
-          <van-cell>
-            <template slot="title">
-              <div class="custom-title">问题描述</div>
-              <div class="custom-value problemDescribe">
-                <!-- <i class="iconfont" @click="handleVoice">&#xe62e;</i> -->
-                <van-field
-                  v-model="problemDescribe"
-                  rows="2"
-                  autosize
-                  type="textarea"
-                  maxlength="300"
-                  placeholder="请输入问题描述"
-                  show-word-limit
-                />
-              </div>
-            </template>
-          </van-cell>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">设施</div>
+                <div class="custom-value">
+                  <facility @getType="getFacility"></facility>
+                </div>
+              </template>
+            </van-cell>
+            <!-- <van-cell>
+              <template slot="title">
+                <div class="custom-title">桩号</div>
+                <div class="custom-value"></div>
+              </template>
+            </van-cell> -->
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">设施方向</div>
+                <div class="custom-value">
+                  <div class="flex">
+                    <van-field
+                            v-model="facilitiesDirection"
+                            id="bearing"
+                            readonly=""
+                    />
+                    <div>
+                      <van-checkbox
+                              id="check"
+                              v-model="oppositeLane"
+                              shape="square"
+                      ></van-checkbox>
+                    </div>
+                    <van-field id="choose" v-model="position" readonly />
+                  </div>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">部件类型</div>
+                <div class="custom-value">
+                  <parts @getParts="getParts"></parts>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">构件名称-编号</div>
+                <div class="custom-value">
+                  <building @getType="getBuilding"></building>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">损坏类型</div>
+                <div class="custom-value">
+                  <damage @getType="getDamage"></damage>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">
+                  程度
+                  <i class="iconfont lq-wenhao" @click="showRate"></i>
+                </div>
+                <div class="custom-value">
+                  <van-rate v-model="damageDegree" :count="4" touchable />
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">问题数量</div>
+                <div class="custom-value flex">
+                  <van-field
+                          readonly
+                          clickable
+                          :value="problemNum"
+                          placeholder="请输入问题数量"
+                          @touchstart.native.stop="problemNumShow = true"
+                  />
+                  <van-number-keyboard
+                          v-model="problemNum"
+                          :show="problemNumShow"
+                          extra-key="."
+                          close-button-text="完成"
+                          @blur="close('问题数量')"
+                  />
+                  <div>{{ companyType }}</div>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">处理时限</div>
+                <div class="custom-value flex">
+                  <van-field
+                          readonly
+                          clickable
+                          placeholder="请输入处理时限"
+                          :value="limitTime"
+                          @touchstart.native.stop="dateShow = true"
+                  />
+                  <van-number-keyboard
+                          v-model="limitTime"
+                          :show="dateShow"
+                          close-button-text="完成"
+                          @blur="close('处理时限')"
+                  />
+                  <div>天</div>
+                </div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="custom-title">问题描述</div>
+                <div class="custom-value problemDescribe">
+                  <!-- <i class="iconfont" @click="handleVoice">&#xe62e;</i> -->
+                  <van-field
+                          v-model="problemDescribe"
+                          rows="2"
+                          autosize
+                          type="textarea"
+                          maxlength="300"
+                          placeholder="请输入问题描述"
+                          show-word-limit
+                  />
+                </div>
+              </template>
+            </van-cell>
+          </div>
         </div>
+        <van-cell>
+          <template slot="title">
+            <van-button type="info" @click="submit">提交</van-button>
+          </template>
+        </van-cell>
       </div>
-      <van-cell>
-        <template slot="title">
-          <van-button type="info" @click="submit">提交</van-button>
-        </template>
-      </van-cell>
+      <div class="dialog">
+        <van-dialog v-model="rateShow" show-cancel-button>
+          <div class="content">
+            <div class="content-div">
+              <div>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+              </div>
+              <div>完好无损</div>
+            </div>
+            <div class="content-div">
+              <div>
+                <i class="iconfont lq-star_full"></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+              </div>
+              <div>轻微</div>
+            </div>
+            <div class="content-div">
+              <div>
+                <i class="iconfont lq-star_full"></i>
+                <i class="iconfont lq-star_full"></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+              </div>
+              <div>中度,不影响安全</div>
+            </div>
+            <div class="content-div">
+              <div>
+                <i class="iconfont lq-star_full"></i>
+                <i class="iconfont lq-star_full"></i>
+                <i class="iconfont lq-star_full"></i>
+                <i
+                        class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
+                ></i>
+              </div>
+              <div>严重,将影响安全</div>
+            </div>
+            <div class="content-div">
+              <div>
+                <i class="iconfont lq-star_full"></i>
+                <i class="iconfont lq-star_full"></i>
+                <i class="iconfont lq-star_full"></i>
+                <i class="iconfont lq-star_full"></i>
+              </div>
+              <div>紧急,已影响到安全</div>
+            </div>
+          </div>
+          <!-- <img src="https://img.yzcdn.cn/vant/apple-3.jpg" /> -->
+        </van-dialog>
+      </div>
     </div>
-
-    <div class="dialog">
-      <van-dialog v-model="rateShow" show-cancel-button>
-        <div class="content">
-          <div class="content-div">
-            <div>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-            </div>
-            <div>完好无损</div>
-          </div>
-          <div class="content-div">
-            <div>
-              <i class="iconfont lq-star_full"></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-            </div>
-            <div>轻微</div>
-          </div>
-          <div class="content-div">
-            <div>
-              <i class="iconfont lq-star_full"></i>
-              <i class="iconfont lq-star_full"></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-            </div>
-            <div>中度,不影响安全</div>
-          </div>
-          <div class="content-div">
-            <div>
-              <i class="iconfont lq-star_full"></i>
-              <i class="iconfont lq-star_full"></i>
-              <i class="iconfont lq-star_full"></i>
-              <i
-                class="iconfont lq-changyongtubiao-xianxingdaochu-zhuanqu-"
-              ></i>
-            </div>
-            <div>严重,将影响安全</div>
-          </div>
-          <div class="content-div">
-            <div>
-              <i class="iconfont lq-star_full"></i>
-              <i class="iconfont lq-star_full"></i>
-              <i class="iconfont lq-star_full"></i>
-              <i class="iconfont lq-star_full"></i>
-            </div>
-            <div>紧急,已影响到安全</div>
-          </div>
-        </div>
-        <!-- <img src="https://img.yzcdn.cn/vant/apple-3.jpg" /> -->
-      </van-dialog>
-    </div>
-  </div>
+  </keep-alive>
 </template>
 
 <script>
@@ -258,6 +262,7 @@ export default {
   data() {
     return {
       text : true ,
+      positionArr: [],
       dateShow: false, //天数数字键盘
       problemNumShow: false, //问题数量数字键盘
       rateShow: false, //程度级别
@@ -286,12 +291,15 @@ export default {
       code: ""
     };
   },
+  computed: {
+    init(){
+      return window.init;
+    }
+  },
+  created(){
+
+  },
   mounted() {
-    // let code = "";
-    // if (!code) {
-    //   code = getCode();
-    // }
-    // console.log("code:", code);
     this.getCodes();
   },
   methods: {
@@ -310,12 +318,12 @@ export default {
         dd.runtime.permission.requestAuthCode({
           corpId: _this.corpId,
           onSuccess: function(result) {
-            // console.log("code:", JSON.stringify(result.code));
+            console.log("获取code成功:", JSON.stringify(result.code));
             _this.code = result.code;
             _this.getToken();
           },
           onFail: function(err) {
-            alert("fail");
+            console.log("获取code失败:");
             alert(JSON.stringify(err));
           }
         });
@@ -347,8 +355,6 @@ export default {
         this.code = "ac95d0e845c3302e9d999f31aef2c869";
         token = "daac5e9879473cd198e6d627493ee12b";
       }
-      console.log('token',token);
-      console.log('code',this.code);
       this.$http
         .get("api/DDLogin/getUserid", {
           params: {
@@ -357,11 +363,7 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
-          console.log('11111111111111111111');
-          //setInfo(res);
           if (res.data.data.content.errcode === 0) {
-            // alert("userid获取成功");
             setInfo("userid", res.data.data.content.userid);
             this.reportUserId = res.data.data.content.userid;
           } else {
@@ -380,19 +382,23 @@ export default {
         ? (this.problemNumShow = false)
         : (this.dateShow = false);
     },
+
     getFacility(data, componentDirection) {
       // console.log("父组件设施为:" + data);
       this.facilitiesName = data;
       this.facilitiesDirection = componentDirection;
     },
+
     getParts(data) {
       // console.log("部件类型父组件数据===" + data);
       this.partsName = data;
     },
+
     getBuilding(data) {
       // console.log("构件编号父组件数据===" + data);
       this.componentName = data;
     },
+
     getDamage(data, companyType) {
       // console.log("损坏父组件数据===" + data);
       this.damageId = data;
@@ -401,11 +407,13 @@ export default {
     getMap(lng, lat, address) {
       this.longitude = lng;
       this.latitude = lat;
-      address = address.replace(/\"/g, "");
-      this.address = address;
+      if(address){
+        this.address = address.replace(/\"/g, "");
+      } else {
+        this.address = '';
+      }
     },
     getImg(img) {
-      console.log("img", img);
       this.imgList = img;
     },
     submit() {
@@ -491,7 +499,6 @@ export default {
   .address {
     width: 237px;
     height: 153px;
-    background: red;
   }
 
   .problemDescribe {

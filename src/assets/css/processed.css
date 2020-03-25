@@ -2,7 +2,7 @@
   background-color: #e5e5e7;
   /*100vh == height:100%,元素撑开与屏幕等高 */
   height: auto;
-  max-height: 100vh;
+  min-height: 100vh;
   /* min-height: 100vh; */
   /* overflow-y: hidden; */
 }

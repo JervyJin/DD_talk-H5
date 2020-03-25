@@ -13,12 +13,12 @@
       :style="{ height: '50%' }"
       @click-overlay="clickModel"
     >
+
       <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
         <van-search
           v-model="searchName"
           placeholder="请输入设施名称"
           input-align="center"
-          @input="searchFacility"
         />
         <van-list
           v-model="loading"
@@ -26,10 +26,10 @@
           finished-text="没有更多了"
           loading-text="加载中，请稍后"
           error-text="加载失败"
-          @load="getData"
           :offset="10"
         >
           <div class="list-item">
+
             <van-cell
               :class="{ activeText: facilitiesName == item.facilityName }"
               v-for="(item, key) in list"
@@ -40,7 +40,10 @@
             </van-cell>
           </div>
         </van-list>
+
       </van-pull-refresh>
+
+
     </van-popup>
   </div>
 </template>
@@ -64,6 +67,14 @@ export default {
       searchName: ""
     };
   },
+  watch: {
+    '$parent.longitude': function() {
+      this.getData();
+    },
+    '$parent.latitude': function() {
+      this.getData();
+    }
+  },
   //方法集合
   methods: {
     openDialog() {
@@ -86,7 +97,7 @@ export default {
       }
       this.list = [];
       this.$http
-        .get("api/selectFacilityByLonLat", {
+        .get(`${url}/selectFacilityByLonLat`, {
           params: {
             longitude: longitude,
             latitude: latitude
@@ -94,14 +105,11 @@ export default {
         })
         .then(res => {
           if (res.data.errcode == 0) {
-            // console.log("content", res.data.data.content);
             res.data.data.content.forEach(value => {
-              // console.log("value", value);
               this.list.push(value);
             });
             this.finished = true;
           } else {
-            // 缺少查询参数
             Toast(res.data.errmsg);
             this.finished = true;
           }
@@ -110,10 +118,11 @@ export default {
           console.log("err", err);
         });
     },
+
     // 搜索设施名
     searchFacility() {
       this.$http
-        .get("api/selectAllSonFacility", {
+        .get(`${url}/selectAllSonFacility`, {
           params: {
             facilityName: this.searchName
           }
@@ -134,6 +143,7 @@ export default {
           }
         });
     },
+
     onRefresh() {
       //下拉刷新
       this.isLoading = false;
@@ -146,14 +156,21 @@ export default {
       this.getData();
       // this.finished = false;
     },
+
     onSelect(item) {
+      console.log('选择的子设施',item);
+
       this.facilitiesName = item.facilityName;
-      this.$emit("getType", item.facilityName, item.componentDirection);
-      bus.$emit("getParts", item.szysPartsVos);
+
+      let szysPartsVos = item.szysPartsVos; //部件
+
+      bus.$emit("getSzysPartsVos", szysPartsVos);
+
       this.show = false;
     },
+
     clickModel() {
-      this.list = [];
+/*      this.list = [];*/
       this.searchName = "";
     }
   }

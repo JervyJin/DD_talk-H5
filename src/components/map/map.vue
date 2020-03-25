@@ -1,20 +1,28 @@
 <template>
-  <div class="amap-page-container" style="width: 100vw; height: 100vh">
-    <el-amap
-     :vid="myId"
-      :zoom="zoom"
-      :plugin="plugin"
-      class="amap-demo"
-      :center="center"
-    >
-      <el-amap-marker :position="center" vid="amapMarker"></el-amap-marker>
-    </el-amap>
+  <div>
+    <div class="amap-page-container" style="width: 100vw; height: 100vh">
+      <el-amap
+              :vid="myId"
+              :zoom="zoom"
+              :plugin="plugin"
+              class="amap-demo"
+              :events="events"
+              :center="center"
+      >
+        <el-amap-marker :position="center" vid="amapMarker"></el-amap-marker>
+      </el-amap>
+    </div>
+
+    <van-button type="primary"
+                style="position: fixed; top: 90vh; right: 3vw;"
+                v-if="isUpdate"
+                @click="sure">确定</van-button>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['myId'],
+  props: ['myId', 'isUpdate'],
   data() {
     let self = this;
     return {
@@ -23,6 +31,13 @@ export default {
       lng: 0,
       lat: 0,
       loaded: false,
+      events: {
+        click: e => {
+          if(this.isUpdate){
+            this.center = [e.lnglat.lng, e.lnglat.lat];
+          }
+        }
+      },
       plugin: [
         //一些工具插件
         {
@@ -36,16 +51,13 @@ export default {
                   self.lat = result.position.lat; //设置维度
                   self.center = [self.lng, self.lat]; //设置坐标
                   self.loaded = true; //load
-                  console.log("lng", self.lng);
-                  console.log("lat", self.lat);
-                  console.log("地址:", JSON.stringify(result.formattedAddress));
+                  console.log("lng", self.lng, "lat", self.lat, "地址:", JSON.stringify(result.formattedAddress));
                   /*this.$emit(
                     "getMap",
                     result.position.lng,
                     result.position.lat,
                     JSON.stringify(result.formattedAddress)
                   );*/
-                  self.$nextTick(); //页面渲染好后
                 }
               });
             }
@@ -53,6 +65,13 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    sure(){
+      this.$eventBus.$emit('getLngAndLat',  this.center);
+      window.init = false;
+      this.$router.push({name: 'copyList'});
+    }
   },
   mounted() {
     // text = false;

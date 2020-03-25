@@ -109,6 +109,7 @@ export default {
   methods: {
     getImg(img) {
       this.imgList = img;
+      console.log(this.imgList);
     },
     submit() {
       this.userId = "013062525840476870";
@@ -117,9 +118,9 @@ export default {
       let params = {
         feedbackType: this.feedbackType,
         opinion: this.opinion,
-        img1: this.imgList[0],
-        img2: this.imgList[1],
-        img3: this.imgList[2],
+        img1: this.imgList[0] ? this.imgList[0].url : '',
+        img2: this.imgList[1] ? this.imgList[1].url : '',
+        img3: this.imgList[2] ? this.imgList[2].url : '',
         userId: this.userId,
         userName: this.userName,
         phoneNumber: this.phoneNumber
@@ -135,12 +136,13 @@ export default {
         Toast("至少上传一张图片");
       } else {
         this.$http
-          .post("api/feedback/insertOrUpdateFeedback", params)
+          .post(`${url}/feedback/insertOrUpdateFeedback`, params)
           .then(res => {
             if (res.data.errcode == 0) {
-              Toast(res.data.errmsg);
+              Toast('反馈成功');
+              this.$router.push({name: 'mine'})
             } else {
-              Toast.fail("保存失败", res.data.errmsg);
+              Toast.fail("失败", res.data.errmsg);
             }
           });
       }

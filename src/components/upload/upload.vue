@@ -2,7 +2,7 @@
   <!-- TODO:增加删除、上传状态 -->
   <div class="upload">
     <van-uploader
-      v-model="fileList"
+      v-model="array"
       :max-count="count"
       :maxSize="maxSize"
       :deletable="true"
@@ -37,11 +37,13 @@ export default {
     beforeRead(file) {
       const reg2 = /^(\s|\S)+(jpg|png|jpeg|JPG|PNG|bmp)+$/;
       if (!reg2.test(file.type)) {
-        this.$warning("请上传图片");
+        Toast.fail('请上传 jpg、png、jpeg、JPG、PNG、bmp 格式图片！');
         return false;
+      } else {
+        return true;
       }
-      return true;
     },
+
     // 图片读取后的操作
     afterRead(file) {
       file.status = "uploading";
@@ -50,29 +52,25 @@ export default {
       UForm.append("file", file.file);
       this.uploadImg(UForm, file);
     },
+
     // 上传图片
     uploadImg(imgFile, file) {
       // 应该是压缩成功后再上传
-      this.$http.post("api/file/upload", imgFile).then(res => {
+      this.$http.post( `${url}/file/upload`, imgFile).then(res => {
         if (res.data.errcode == 0) {
           file.status = "success";
           file.message = "上传成功";
-          //console.log('res url', res.data.url)
-          //console.log('this file list', this.fileList)
-          // 这里不是往数组中添加了两次
-         // this.fileList.push({
-         //    url: res.data.url
-         // });
-          // 这里的是什么
-          this.array.push(res.data.url);
-          //console.log("fileList", this.fileList);
-          //console.log("arSrat", this.array);
+          Toast('上传成功');
+          this.array.push({url: res.data.url,status : "success", message : "上传成功"});
+          this.$emit('getImg', this.array)
         } else {
           file.status = "failed";
           file.message = "上传失败";
+          alert('上传失败');
         }
       });
     },
+
     // 压缩图片
     oversize(file) {
       const that = this;

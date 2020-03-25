@@ -1,6 +1,6 @@
 <template>
     <div>
-        <mapContainer :myId="'vueMap2'"></mapContainer>
+        <mapContainer :myId="'vueMap2'" :isUpdate="true"></mapContainer>
     </div>
 </template>
 

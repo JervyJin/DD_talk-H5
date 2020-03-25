@@ -8,6 +8,9 @@ import "./assets/css/common.css";
 import "./assets/css/vant.less";
 import * as dd from "dingtalk-jsapi"; // 引用钉钉jsapi
 import VueAMap from "vue-amap";
+import {url} from "./config";
+import eventBus from "js/eventBus";
+
 Vue.use(VueAMap);
 
 import {
@@ -78,8 +81,12 @@ VueAMap.initAMapApiLoader({
 });
 Vue.prototype.$http = axios;
 
+Vue.prototype.$eventBus = eventBus;
+
 Vue.config.productionTip = false;
 
+window.url = url;
+window.init = true;
 
 new Vue({
   router,

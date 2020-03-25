@@ -40,13 +40,16 @@ export default {
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
-    bus.$on("getComponents", array => {
-      console.log("接收到的构件", array);
-      this.array = array;
-      console.log("array", this.array);
-      for (let i = 0; i < array.length; i++) {
-        this.componentName = array[0].componentName;
-        this.$emit("getType", array[0].componentId);
+    bus.$on("getSzysComponent", array => {
+      if(array.length > 0){
+        this.array = array;
+        this.componentName = this.array[0].componentName;
+        bus.$emit("getSelectDisease", this.array[0].componentTypeId);
+      } else {
+        this.componentName = '';
+        this.array = [];
+        this.componentName = '';
+        bus.$emit("getSelectDisease", '')
       }
     });
   },
@@ -57,13 +60,12 @@ export default {
       if (this.array.length == 0) {
         this.array = [];
         this.componentName = "";
-        Toast("该设施下无构件,请添加");
+        Toast("该部件下无构件，请添加！");
       }
     },
     onSelect(item) {
+      bus.$emit("getSelectDisease", item.componentTypeId);
       this.componentName = item.componentName;
-      console.log("componentId", item.componentId);
-      this.$emit("getType", item.componentId);
       this.show = false;
     }
   }

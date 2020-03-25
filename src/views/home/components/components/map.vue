@@ -9,6 +9,7 @@
     <el-amap
       vid="amap"
       :zoom="zoom"
+      ref="amap"
       :plugin="plugin"
       class="amap-demo"
       :center="center"
@@ -20,7 +21,7 @@
 
 <script>
 export default {
-  props: ['text'],
+  props: ['text', 'position', 'init'],
   data() {
     let self = this;
     return {
@@ -35,30 +36,57 @@ export default {
           pName: "Geolocation", //定位
           events: {
             init(o) {
-              // o 是高德地图定位插件实例
               o.getCurrentPosition((status, result) => {
                 if (result.info == "SUCCESS" && status == "complete") {
                   self.lng = result.position.lng; //设置经度
                   self.lat = result.position.lat; //设置维度
                   self.center = [self.lng, self.lat]; //设置坐标
                   self.loaded = true; //load
-                  // console.log("lng", self.lng);
-                  // console.log("lat", self.lat);
-                  // console.log("地址:", JSON.stringify(result.formattedAddress));
                   self.$emit(
-                    "getMap",
-                    result.position.lng,
-                    result.position.lat,
-                    JSON.stringify(result.formattedAddress)
+                          "getMap",
+                          result.position.lng,
+                          result.position.lat,
+                          JSON.stringify(result.formattedAddress)
                   );
                   self.$nextTick(); //页面渲染好后
                 }
               });
+             /* if(self.init){
+                o.getCurrentPosition((status, result) => {
+                  if (result.info == "SUCCESS" && status == "complete") {
+                    self.lng = result.position.lng; //设置经度
+                    self.lat = result.position.lat; //设置维度
+                    self.center = [self.lng, self.lat]; //设置坐标
+                    self.loaded = true; //load
+                    self.$emit(
+                            "getMap",
+                            result.position.lng,
+                            result.position.lat,
+                            JSON.stringify(result.formattedAddress)
+                    );
+                    self.$nextTick(); //页面渲染好后
+                  }
+                });
+              } else {
+                if(self.position && self.position.length > 0){
+                  self.center = self.position;
+                }
+              }*/
             }
           }
         }
       ]
     };
+  },
+  created(){
+   /* this.$eventBus.$on('getLngAndLat', (data)=> {
+      this.center[0] = data[0];
+      this.center[1] = data[1];
+      this.$forceUpdate();
+    });*/
+  },
+  mounted() {
+
   }
 };
 </script>
@@ -74,17 +102,4 @@ export default {
   color: #fff;
 }
 
-.amap-geolocation-con {
-  left: 86% !important;
-  /* right: 10px; */
-  /* bottom: 34px !important; */
-  bottom: 6px !important;
-}
-
-.toolbar {
-  line-height: 30px;
-  font-size: 15px;
-  color: #fff;
-  margin-top: 10px;
-}
 </style>

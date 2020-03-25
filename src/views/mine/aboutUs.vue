@@ -1,6 +1,8 @@
 <template>
   <div class="container">
-    <img src="../../assets/img/aboutUs.jpg" alt="关于我们" />
+    <h3>
+      杭州市市政设施监管中心
+    </h3>
   </div>
 </template>
 
@@ -13,8 +15,9 @@ export default {
 };
 </script>
 <style lang='less' scoped>
-.container img {
+.container{
   width: 100vw;
   height: 100vh;
+  line-height: 30vh;
 }
 </style>

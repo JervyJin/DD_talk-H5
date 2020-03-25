@@ -48,8 +48,8 @@ export default {
     dd.util.domainStorage.getItem({
       name: "userid", // 存储信息的key值
       onSuccess: function(info) {
-        console.log("info", JSON.stringify(info.value));
         _this.reportUserId = info.value;
+        alert(info.value);
         if (info.value) {
           _this.getProcessInfo();
         }
@@ -75,7 +75,7 @@ export default {
         this.reportUserId = "013062525840476870";
       }
       this.$http
-        .get("api/report/pendingReport", {
+        .get(`${url}/report/pendingReport`, {
           params: {
             reportUserId: this.reportUserId,
             reportType: this.active
@@ -87,7 +87,8 @@ export default {
               Toast("暂无数据");
               this.infoData = [];
             } else {
-              // console.log("active", this.active);
+              console.log(res);
+
               this.active == 1
                 ? (self.pendingInfo = res.data.data.count)
                 : (self.reviewInfo = res.data.data.count);
@@ -126,6 +127,6 @@ input::-webkit-input-placeholder {
 }
 
 .van-tabs__content{
-  
+
 }
 </style>

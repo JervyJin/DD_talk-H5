@@ -11,11 +11,13 @@
       </div>
       <map-container :myId="'vueMap1'"></map-container>
     </div>
+
     <div class="list">
       <router-link to="/copyList">
         <img src="@/assets/img/icon-bhcs.png" alt="病害抄送"  @click="changeShowMap"/>
       </router-link>
     </div>
+
     <footer-container></footer-container>
   </div>
 </template>

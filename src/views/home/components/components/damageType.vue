@@ -13,32 +13,21 @@
       :style="{ height: '50%' }"
       @click-overlay="clickModel"
     >
-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          loading-text="加载中，请稍后"
-          error-text="加载失败"
-          @load="getData"
-          :offset="10"
-        >
-          <div class="list-item">
-            <van-cell
-              :class="{ activeText: damageName == item }"
-              v-for="(item, key) in list"
-              :key="key"
-              :title="item.damageName + ''"
-              @click="onSelect(item)"
-            />
-          </div>
-        </van-list>
-      </van-pull-refresh>
+      <div class="list-item">
+        <van-cell
+                :class="{ activeText: damageName == item }"
+                v-for="(item, key) in list"
+                :key="key"
+                :title="item.damageName + ''"
+                @click="onSelect(item)"
+        />
+      </div>
     </van-popup>
   </div>
 </template>
 <script>
 import { Toast } from "vant";
+import bus from "js/eventBus";
 export default {
   components: {},
   data() {
@@ -55,6 +44,34 @@ export default {
       total: 0
     };
   },
+  mounted(){
+    bus.$on("getSelectDisease", componentId => {
+      if(componentId){
+        this.$http.get(`${url}/selectDisease`,{
+          params: {
+            componentId
+          }
+        }).then(res => {
+          if(res.data.errcode === 0){
+            if( res.data.data.content.length > 0){
+              this.list = res.data.data.content;
+              this.damageName = this.list[0].damageName
+              this.isLoading = true;
+            }else {
+              this.list = [];
+              this.damageName = '';
+            }
+          } else{
+            Toast(res.data.errmsg)
+          }
+        })
+      } else {
+        this.list = [];
+        this.damageName = '';
+      }
+    });
+  },
+
   //方法集合
   methods: {
     openDialog() {
@@ -63,37 +80,12 @@ export default {
         this.pageNum = 1;
         this.total = 0;
       }
+      if (this.list.length <= 0) {
+        Toast("该构件下无损害类型，请添加！");
+      }
       this.getData();
     },
     getData() {
-      this.$http
-        .get("api/selectDamageType", {
-          params: {
-            pageNum: this.pageNum,
-            pageSize: this.pageSize
-          }
-        })
-        .then(res => {
-          if (res.data.errcode == 0) {
-            const obj = res.data.data.content;
-            // if (obj.length > 0) {
-            const _this = this;
-            if (_this.total < res.data.data.totalNum) {
-              obj.forEach(value => {
-                _this.list.push(value);
-              });
-              _this.pageNum++;
-              _this.total++;
-              this.loading = false;
-            } else {
-              this.finished = true;
-            }
-            // } else {
-            //   Toast("搜索的信息不存在");
-            //   _this.list = [];
-            // }
-          }
-        });
     },
     onRefresh() {
       //下拉刷新

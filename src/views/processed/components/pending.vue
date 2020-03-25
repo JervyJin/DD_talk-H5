@@ -1,19 +1,13 @@
 <template>
-  <div class="baseContainer">
-    <div class="common-div">
-      <div class="pagelist">
+  <div class="baseContainer" style="margin-top: 10px;">
+    <div>
+      <div>
         <div
-          class="content"
           v-for="(item, key) in infoData"
           :key="key"
           @click="routerDetails(item.reportId)"
         >
-          <div v-if="infoData.length == 0">
-            <img src="@/assets/img/zwsj.png" alt="暂无图片" />
-            <div>无数据无数据</div>
-          </div>
-          <div else>
-            <div>无数据无数据11</div>
+          <div>
             <van-cell>
               <template slot="title">
                 <div class="custom-title">{{ item.facilitiesName }}</div>
@@ -43,7 +37,7 @@
                   <div class="custom-value">{{ item.componentName }}</div>
                 </template>
               </van-cell>
-              <van-cell>
+              <van-cell v-if="item.problemDescribe">
                 <template slot="title">
                   <div class="custom-title">问题描述</div>
                   <div class="custom-value">{{ item.problemDescribe }}</div>
@@ -51,6 +45,8 @@
               </van-cell>
             </div>
           </div>
+
+          <div style="background: #e5e5e7; width: 100vw; height: 10px;"></div>
         </div>
       </div>
     </div>

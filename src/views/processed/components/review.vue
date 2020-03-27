@@ -50,8 +50,7 @@
               <van-button
                 type="info"
                 @click="handleBtn('不合格', item.reportId)"
-                >不合格</van-button
-              >
+                >不合格</van-button>
               <van-button type="info" @click="handleBtn('合格', item.reportId)"
                 >合格</van-button
               >
@@ -71,7 +70,7 @@
             autosize
             label="留言"
             type="textarea"
-            placeholder="请输入留言"
+            placeholder="请输入不合格理由"
           />
         </div>
       </van-dialog>
@@ -101,11 +100,9 @@ export default {
               Toast("暂无数据，请去病害上报上传信息");
               this.infoData = [];
             } else {
-              console.log("active", this.active);
               this.active == 1
                 ? (self.pendingInfo = res.data.data.count)
                 : (self.reviewInfo = res.data.data.count);
-
               this.infoData = res.data.data.content;
               res.data.data.content.map(value => {
                 if (value.reportTime != null || value.byTime != null) {
@@ -121,20 +118,21 @@ export default {
     },
     handleBtn(text, id) {
       let reportType = "";
+      let message = '';
       text == "不合格"
-        ? ((reportType = 6), (this.rateShow = true))
-        : (reportType = 7);
+        ? ((reportType = 6), (this.rateShow = true),(message = "确认不合格吗？"))
+        : ((reportType = 7), (message = "确认当前工单审核合格？"));
       let params = {
         reportType: reportType,
         reportId: id
       };
-      console.log("params", params);
-      return false;
+
       Dialog.confirm({
-        message: "是否确定要进行此操作"
+        title: '提示',
+        message: message
       })
         .then(() => {
-          this.$http.post("api/insertOrUpdateReport", params).then(res => {
+          this.$http.post(`${url}/insertOrUpdateReport`, params).then(res => {
             if (res.data.errcode == 0) {
               Toast("操作成功");
               this.getProcessInfo();

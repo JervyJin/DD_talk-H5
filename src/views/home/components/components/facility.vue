@@ -13,36 +13,34 @@
       :style="{ height: '50%' }"
       @click-overlay="clickModel"
     >
+      <van-search
+              v-model="searchName"
+              placeholder="请输入设施名称"
+              input-align="center"
+              style="width: 80vw"
+              @search="searchFilter"
+      />
 
-      <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-        <van-search
-          v-model="searchName"
-          placeholder="请输入设施名称"
-          input-align="center"
-        />
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          finished-text="没有更多了"
-          loading-text="加载中，请稍后"
-          error-text="加载失败"
-          :offset="10"
-        >
-          <div class="list-item">
+      <van-list
+              v-model="loading"
+              :finished="finished"
+              finished-text="没有更多了"
+              loading-text="加载中，请稍后"
+              error-text="加载失败"
+              :offset="10"
+      >
+        <div class="list-item">
 
-            <van-cell
-              :class="{ activeText: facilitiesName == item.facilityName }"
-              v-for="(item, key) in list"
-              :key="key"
-              @click="onSelect(item)"
-            >
-              {{ item.facilityName }}
-            </van-cell>
-          </div>
-        </van-list>
-
-      </van-pull-refresh>
-
+          <van-cell
+                  :class="{ activeText: facilitiesName == item.facilityName }"
+                  v-for="(item, key) in tableList"
+                  :key="key"
+                  @click="onSelect(item)"
+          >
+            {{ item.facilityName }}
+          </van-cell>
+        </div>
+      </van-list>
 
     </van-popup>
   </div>
@@ -58,6 +56,7 @@ export default {
       facilitiesName: "",
       show: false,
       list: [],
+      tableList: [],
       loading: false, //是否处于加载状态
       finished: false, //是否已加载完所有数据
       isLoading: false, //是否处于下拉刷新状态
@@ -74,6 +73,8 @@ export default {
     '$parent.latitude': function() {
       this.getData();
     }
+  },
+  mounted(){
   },
   //方法集合
   methods: {
@@ -105,9 +106,9 @@ export default {
         })
         .then(res => {
           if (res.data.errcode == 0) {
-            res.data.data.content.forEach(value => {
-              this.list.push(value);
-            });
+            this.list = res.data.data.content;
+            this.searchFilter();
+
             this.finished = true;
           } else {
             Toast(res.data.errmsg);
@@ -154,7 +155,6 @@ export default {
         this.total = 0;
       }
       this.getData();
-      // this.finished = false;
     },
 
     onSelect(item) {
@@ -166,12 +166,22 @@ export default {
 
       bus.$emit("getSzysPartsVos", szysPartsVos);
 
+      this.$emit("getType", item.facilityName, item.componentDirection);
+
       this.show = false;
     },
 
     clickModel() {
 /*      this.list = [];*/
       this.searchName = "";
+    },
+
+    searchFilter(){
+      if(this.searchName === ''){
+        this.tableList = this.list;
+      } else {
+        this.tableList = this.list.filter(item => item.facilityName.indexOf(this.searchName) !== -1);
+      }
     }
   }
 };

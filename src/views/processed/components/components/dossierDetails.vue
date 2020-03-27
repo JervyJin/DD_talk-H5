@@ -1,7 +1,6 @@
 <template>
   <!-- TODO:父子组件传值未实现 -->
   <div class="container">
-    <div class="tab">
       <van-tabs>
         <van-tab title="基本信息">
           <info :infoData="infoData" v-if="infoData.length > 0" />
@@ -10,7 +9,6 @@
           <process :infoData="infoData" v-if="infoData.length > 0" />
         </van-tab>
       </van-tabs>
-    </div>
   </div>
 </template>
 

@@ -24,7 +24,7 @@ export default new Router({
           path: "/copyList",
           name: "copyList",
           component: resolve => {
-            require(["views/home/components/copyList"], resolve);
+            require(["views/home/components/copyList.vue"], resolve);
           },
           meta: { title: '抄告问题', isleftarrow: true },
         },

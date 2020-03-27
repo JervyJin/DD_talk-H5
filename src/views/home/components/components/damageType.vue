@@ -55,11 +55,13 @@ export default {
           if(res.data.errcode === 0){
             if( res.data.data.content.length > 0){
               this.list = res.data.data.content;
-              this.damageName = this.list[0].damageName
+              this.damageName = this.list[0].damageName;
+              this.$emit("getType", this.list[0].damageType, this.list[0].companyType);
               this.isLoading = true;
             }else {
               this.list = [];
               this.damageName = '';
+              this.$emit("getType", '', '');
             }
           } else{
             Toast(res.data.errmsg)
@@ -68,6 +70,7 @@ export default {
       } else {
         this.list = [];
         this.damageName = '';
+        this.$emit("getType", '', '');
       }
     });
   },
@@ -101,12 +104,10 @@ export default {
     },
     onSelect(item) {
       this.damageName = item.damageName;
-      console.log("item", item);
       this.show = false;
-      this.$emit("getType", item.damageId, item.companyType);
+      this.$emit("getType", item.damageType, item.companyType);
     },
     clickModel() {
-      this.list = [];
     }
   }
 };

@@ -4,6 +4,7 @@
       <div class="common-div">
         <div class="pagelist">
           <div class="content">
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">问题图</div>
@@ -12,6 +13,7 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell class="display-block">
               <template slot="title">
                 <div class="custom-title">位置</div>
@@ -26,6 +28,7 @@
                 <router-link to="changeAddress" tag="div">修改位置</router-link>
               </div>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">设施</div>
@@ -34,12 +37,7 @@
                 </div>
               </template>
             </van-cell>
-            <!-- <van-cell>
-              <template slot="title">
-                <div class="custom-title">桩号</div>
-                <div class="custom-value"></div>
-              </template>
-            </van-cell> -->
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">设施方向</div>
@@ -62,6 +60,7 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">部件类型</div>
@@ -70,6 +69,7 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">构件名称-编号</div>
@@ -78,6 +78,7 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">损坏类型</div>
@@ -86,6 +87,8 @@
                 </div>
               </template>
             </van-cell>
+
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">
@@ -97,6 +100,7 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">问题数量</div>
@@ -119,6 +123,7 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">处理时限</div>
@@ -140,11 +145,11 @@
                 </div>
               </template>
             </van-cell>
+
             <van-cell>
               <template slot="title">
                 <div class="custom-title">问题描述</div>
                 <div class="custom-value problemDescribe">
-                  <!-- <i class="iconfont" @click="handleVoice">&#xe62e;</i> -->
                   <van-field
                           v-model="problemDescribe"
                           rows="2"
@@ -250,6 +255,7 @@ import building from "./components/building";
 import damage from "./components/damageType";
 import { getCode, getToken, getInfo, deleteInfo, setInfo } from "js/dd";
 import { Toast } from "vant";
+import bus from "js/eventBus";
 export default {
   components: {
     upload,
@@ -281,14 +287,12 @@ export default {
       latitude: "", // 纬度
       longitude: "", // 经度
       address: "", // 地址
+      partsId: '',
       imgList: [],
       maxDuration: 3, //录音时长
       oppositeLane: false,
-      corpId: "ding69b3c300f038527a35c2f4657eb6378f",
-      appkey: "dingkvfxrebe5d5ghcgp",
-      appsecret:
-        "bbKHABz6QHKXqAhJaAzS8o12VYNgCJ4a9LBop6WArP7uSAg6k-Dsa3dugi5FiByu",
-      code: ""
+      componentTypeId: ''
+
     };
   },
   computed: {
@@ -297,10 +301,14 @@ export default {
     }
   },
   created(){
+    this.getUserId();
+    bus.$on("getComponentDirection", componentDirection => {
+      this.facilitiesDirection = componentDirection;
+    });
 
   },
   mounted() {
-    this.getCodes();
+
   },
   methods: {
     /**
@@ -309,73 +317,19 @@ export default {
      * 2. getToken()  --> 获取accessTOken
      * 3. 通过accessToken和code去获取userId
      */
-    changeText(){
-      this.text = false;
-    },
-    getCodes() {
-      const _this = this;
-      dd.ready(() => {
-        dd.runtime.permission.requestAuthCode({
-          corpId: _this.corpId,
-          onSuccess: function(result) {
-            console.log("获取code成功:", JSON.stringify(result.code));
-            _this.code = result.code;
-            _this.getToken();
-          },
-          onFail: function(err) {
-            console.log("获取code失败:");
-            alert(JSON.stringify(err));
-          }
-        });
-      });
-      dd.error(error => {
-        alert("error");
-        alert(`dd error: ${JSON.stringify(error)}`);
-      });
-    },
-    // 获取accessToken
-    getToken() {
-      this.$http
-        .get("api/DDLogin/getAccessToken", {
-          params: {
-            appkey: this.appkey,
-            appsecret: this.appsecret
-          }
-        })
-        .then(res => {
-          if (res.data.errcode == 0) {
-            // console.log("accessToken", res.data.data.content.accessToken)
-            this.getUserId(res.data.data.content.accessToken);
-          }
-        });
-    },
-    // 获取userId
-    getUserId(token) {
-      if (!token || !this.code) {
-        this.code = "ac95d0e845c3302e9d999f31aef2c869";
-        token = "daac5e9879473cd198e6d627493ee12b";
-      }
-      this.$http
-        .get("api/DDLogin/getUserid", {
-          params: {
-            accessToken: token,
-            code: this.code
-          }
-        })
-        .then(res => {
-          if (res.data.data.content.errcode === 0) {
-            setInfo("userid", res.data.data.content.userid);
-            this.reportUserId = res.data.data.content.userid;
-          } else {
-            Toast.fail(res.data.data.content.errmsg);
-            console.log("userid错误:", res.data.data.content.errmsg);
-          }
-        });
-    },
     // 显示程度
     showRate() {
       this.rateShow = true;
     },
+
+    //获取缓存中的用户id
+    getUserId(){
+      getInfo('userid').then(res => {
+        this.reportUserId = res.value;
+        console.log(res,'copyList获取的id');
+      })
+    },
+
     // 关闭键盘
     close(text) {
       text == "问题数量"
@@ -383,39 +337,47 @@ export default {
         : (this.dateShow = false);
     },
 
+    //子设施返回的数据
     getFacility(data, componentDirection) {
-      // console.log("父组件设施为:" + data);
       this.facilitiesName = data;
-      this.facilitiesDirection = componentDirection;
     },
 
-    getParts(data) {
-      // console.log("部件类型父组件数据===" + data);
+    //部件返回的数据
+    getParts(data, id) {
       this.partsName = data;
+      this.partsId = id;
     },
 
-    getBuilding(data) {
-      // console.log("构件编号父组件数据===" + data);
+    //构件返回的数据
+    getBuilding(data, id) {
       this.componentName = data;
+      this.componentTypeId = id;
     },
 
+    //损害类型返回的数据
     getDamage(data, companyType) {
-      // console.log("损坏父组件数据===" + data);
       this.damageId = data;
       this.companyType = companyType;
     },
+
+    //地图返回的数据
     getMap(lng, lat, address) {
       this.longitude = lng;
       this.latitude = lat;
+      console.log(arguments);
       if(address){
         this.address = address.replace(/\"/g, "");
       } else {
         this.address = '';
       }
     },
+
+    //上传图片返回的数据
     getImg(img) {
       this.imgList = img;
     },
+
+    //提交
     submit() {
       if (!this.latitude || !this.longitude || !this.address) {
         this.latitude = 120.195662;
@@ -433,28 +395,27 @@ export default {
         reportUserId: this.reportUserId,
         facilitiesName: this.facilitiesName,
         facilitiesDirection: this.facilitiesDirection,
+
         damageDegree: this.damageDegree,
         problemNum: this.problemNum,
         limitTime: this.limitTime,
         oppositeLane: this.oppositeLane,
         company: this.companyType,
         problemDescribe: this.problemDescribe,
-
-        partsId: this.partsName,
-        componentId: this.componentName,
+        partsId: this.partsId,
+        componentId: this.componentTypeId,
         damageId: this.damageId,
         latitude: this.latitude,
         longitude: this.longitude,
         place: this.address,
-        img1: this.imgList[0],
-        img2: this.imgList[1],
-        img3: this.imgList[2],
-        img4: this.imgList[3],
-        img5: this.imgList[4],
-        img6: this.imgList[5],
+        img1: this.imgList[0] ? this.imgList[0].url : '',
+        img2: this.imgList[1] ? this.imgList[1].url : '',
+        img3: this.imgList[2] ? this.imgList[2].url : '',
+        img4: this.imgList[3] ? this.imgList[3].url : '',
+        img5: this.imgList[4] ? this.imgList[4].url : '',
+        img6: this.imgList[5] ? this.imgList[5].url : '',
         reportType: 1
       };
-      // console.log("params", params);
       let reg = /^[0-9]+([.]{1}[0-9]{1})?$/;
       if (!this.reportUserId) {
         Toast.fail("用户id为空");
@@ -469,14 +430,18 @@ export default {
         !this.problemNum ||
         !this.limitTime
       ) {
-        const message = "设施、部件类型、构件名称-编号、损坏类型、问题数量";
-        Toast.fail("请查看" + message + "是否填写");
-        // console.log("params11", params);
+        console.log(this.facilitiesName,
+                  this.partsName,
+                this.componentName,this.damageId,this.damageDegree,this.problemNum,this.limitTime);
+        Toast.fail("请检查信息是否填写完整！");
       } else if (!reg.test(params.problemNum)) {
         Toast.fail("问题数量只能保留一位小数");
+      } else if (!params.company) {
+        Toast.fail("该损害无单位！");
       } else {
-        // console.log("提交的params", params);
-        this.$http.post("api/insertOrUpdateReport", params).then(res => {
+        console.log("提交的params", params);
+
+        this.$http.post(`${url}/insertOrUpdateReport`, params).then(res => {
           if (res.data.errcode == 0) {
             Toast.success(res.data.errmsg);
             this.$router.push({ path: "/" });

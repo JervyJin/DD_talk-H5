@@ -59,7 +59,6 @@ function setInfo(name, value) {
         name: name, // 存储信息的key值
         value: value, // 存储信息的Value值
         onSuccess: function (info) {
-            Toast(name + '写入成功')
             console.log(name + "写入成功", JSON.stringify(info));
         },
         onFail: function (err) {

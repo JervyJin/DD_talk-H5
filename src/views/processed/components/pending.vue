@@ -18,6 +18,10 @@
               <template slot="title">
                 <div class="custom-title">上报:</div>
                 <div class="custom-value">{{ item.reportTime }}</div>
+              </template>
+            </van-cell>
+            <van-cell>
+              <template slot="title">
                 <div class="custom-title">截止:</div>
                 <div class="custom-value">{{ item.byTime }}</div>
               </template>

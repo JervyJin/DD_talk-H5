@@ -7,7 +7,6 @@
       :maxSize="maxSize"
       :deletable="true"
       :before-read="beforeRead"
-      :after-read="afterRead"
       @oversize="oversize"
     />
   </div>
@@ -24,10 +23,9 @@ export default {
   data() {
     //这里存放数据
     return {
-      fileList: [], // 这里是要展示的图片url
       array: [], // 这个array保存的是什么
-      imgList: "",
-      maxSize: 201965 // 上传的图片最大接受200K
+      imgArr: [],
+      maxSize: 204800 // 上传的图片最大接受200K
     };
   },
   props: ["count"],
@@ -44,14 +42,6 @@ export default {
       }
     },
 
-    // 图片读取后的操作
-    afterRead(file) {
-      file.status = "uploading";
-      file.message = "上传中...";
-      let UForm = new FormData();
-      UForm.append("file", file.file);
-      this.uploadImg(UForm, file);
-    },
 
     // 上传图片
     uploadImg(imgFile, file) {
@@ -75,9 +65,9 @@ export default {
     oversize(file) {
       const that = this;
       lrz(file.file, {
-        width: 348,
-        height: 196,
-        quality: 0.8 //自定义使用压缩方式
+        width: 288,
+        height: 146,
+        quality: 0.7 //自定义使用压缩方式
       })
         .then(function(rst) {
           file.status = "uploading";

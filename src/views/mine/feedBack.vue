@@ -69,7 +69,6 @@ export default {
       dd.util.domainStorage.getItem({
         name: "userid", // 存储信息的key值
         onSuccess: function(info) {
-          // console.log("info", JSON.stringify(info.value));
           _this.userId = info.value;
         },
         onFail: function(err) {
@@ -80,7 +79,6 @@ export default {
       dd.util.domainStorage.getItem({
         name: "mobile", // 存储信息的key值
         onSuccess: function(info) {
-          // console.log("info", JSON.stringify(info.value));
           _this.phoneNumber = info.value;
         },
         onFail: function(err) {
@@ -100,10 +98,6 @@ export default {
         }
       });
     }
-
-    // console.log("userid:", this.userId);
-    // console.log("phoneNumber:", this.phoneNumber);
-    // console.log("userName:", this.userName);
   },
   //方法集合
   methods: {
@@ -111,11 +105,11 @@ export default {
       this.imgList = img;
       console.log(this.imgList);
     },
-    submit() {
-      this.userId = "013062525840476870";
-      this.userName = "龚铱白";
-      this.phoneNumber = "13666683140";
-      let params = {
+     async submit() {
+       console.log("userid:", this.userId);
+       console.log("phoneNumber:", this.phoneNumber);
+       console.log("userName:", this.userName);
+        let params = {
         feedbackType: this.feedbackType,
         opinion: this.opinion,
         img1: this.imgList[0] ? this.imgList[0].url : '',

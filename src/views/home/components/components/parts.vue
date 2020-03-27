@@ -42,13 +42,16 @@ export default {
   },
   mounted() {
     bus.$on("getSzysPartsVos", parts => {
-      if(parts.length > 0){
+      if(parts && parts.length > 0){
         this.szysComponent = parts;
         this.partsName = this.szysComponent[0].partsName;
         bus.$emit("getSzysComponent", this.szysComponent[0].szysComponent);
+        this.$emit("getParts", this.szysComponent[0].partsName, this.szysComponent[0].partsId);
+
       } else {
         this.szysComponent = [];
         this.partsName = '';
+        this.$emit("getParts", '', '');
         bus.$emit("getSzysComponent", []);
       }
     });
@@ -64,6 +67,7 @@ export default {
     onSelect(item) {
       bus.$emit("getSzysComponent", item.szysComponent);
       this.partsName = item.partsName;
+      this.$emit("getParts", this.partsName, item.partsId);
       this.show = false;
     }
   }

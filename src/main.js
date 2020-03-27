@@ -16,8 +16,11 @@ Vue.use(VueAMap);
 import {
   Uploader,
   Cell,
+  CellGroup,
   Icon,
   Radio,
+  Row,
+  Col,
   Field,
   Button,
   Tabbar,
@@ -29,18 +32,25 @@ import {
   Checkbox,
   Rate,
   PullRefresh,
+  Divider,
+  Collapse,
+  CollapseItem,
   List,
   Popup,
   Search,
   NumberKeyboard,
   Dialog,
   RadioGroup,
-  NavBar
+  NavBar,
+  Tag
 } from 'vant';
 import 'vant/lib/index.css'
 Vue.use(Uploader);
 Vue.use(Icon);
 Vue.use(Cell);
+Vue.use(Collapse);
+Vue.use(CollapseItem);
+Vue.use(CellGroup);
 Vue.use(Field);
 Vue.use(RadioGroup);
 Vue.use(Radio);
@@ -60,6 +70,10 @@ Vue.use(Search);
 Vue.use(NumberKeyboard);
 Vue.use(Dialog);
 Vue.use(NavBar);
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(Divider);
+Vue.use(Tag);
 
 VueAMap.initAMapApiLoader({
   // key: "09a4d90ae2506ceac698060c9598ee80",

@@ -45,11 +45,14 @@ export default {
         this.array = array;
         this.componentName = this.array[0].componentName;
         bus.$emit("getSelectDisease", this.array[0].componentTypeId);
+        this.$emit('getType', this.array[0].componentName, this.array[0].componentId);
+        bus.$emit("getComponentDirection", this.array[0].componentDirection);
       } else {
-        this.componentName = '';
         this.array = [];
         this.componentName = '';
-        bus.$emit("getSelectDisease", '')
+        bus.$emit("getSelectDisease", '');
+        bus.$emit("getComponentDirection", '');
+        this.$emit('getType', '');
       }
     });
   },
@@ -66,6 +69,8 @@ export default {
     onSelect(item) {
       bus.$emit("getSelectDisease", item.componentTypeId);
       this.componentName = item.componentName;
+      this.$emit('getType', this.componentName, item.componentId);
+      bus.$emit("getComponentDirection", item.componentDirection);
       this.show = false;
     }
   }

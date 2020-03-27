@@ -1,5 +1,5 @@
 <template>
-  <div class="processContainer">
+  <div class="processContainer" style="margin-top: 11px;">
     <van-steps direction="vertical" :active="choosrActive">
       <van-step v-for="(item, i) in infoData" :key="i">
         <div class="flex jc-sb">

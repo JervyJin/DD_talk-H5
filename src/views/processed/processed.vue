@@ -49,7 +49,6 @@ export default {
       name: "userid", // 存储信息的key值
       onSuccess: function(info) {
         _this.reportUserId = info.value;
-        alert(info.value);
         if (info.value) {
           _this.getProcessInfo();
         }
@@ -72,7 +71,8 @@ export default {
         this.active = 3;
       }
       if (!this.reportUserId) {
-        this.reportUserId = "013062525840476870";
+        alert('未获取到用户id');
+        return
       }
       this.$http
         .get(`${url}/report/pendingReport`, {
@@ -87,8 +87,6 @@ export default {
               Toast("暂无数据");
               this.infoData = [];
             } else {
-              console.log(res);
-
               this.active == 1
                 ? (self.pendingInfo = res.data.data.count)
                 : (self.reviewInfo = res.data.data.count);

@@ -1,7 +1,7 @@
 <template>
   <div class="infoContainer container">
-    <div class="common-div">
-      <div class="pagelist">
+    <div>
+      <div>
         <div v-if="this.infoData.length > 0">
           <div class="content" v-for="(item, key) in infoData" :key="key">
             <van-cell>
@@ -44,7 +44,7 @@
               <template slot="title">
                 <div class="custom-title">程度</div>
                 <div class="custom-value">
-                  <van-rate v-model="rateValue" readonly />
+                  <van-rate v-model="rateValue" :count="4" readonly />
                 </div>
               </template>
             </van-cell>
@@ -56,7 +56,7 @@
             </van-cell>
             <van-cell>
               <template slot="title">
-                <div class="custom-title">位置</div>
+                <div class="custom-title" style="width: 100px;">位置</div>
                 <div class="custom-value">{{ item.place }}</div>
               </template>
             </van-cell>
@@ -68,19 +68,13 @@
                 </template>
               </van-cell>
             </div>
+            <div style="width: 100vw; height:10px"></div>
             <div>
               <van-cell class="imgContainer">
                 <template slot="title" class="display-block">
                   <div class="custom-title">问题图</div>
-                  <div class="custom-value flex warp">
-                    <!-- <div v-if="!imgItem">
-                        <img
-                          class="zwtp"
-                          src="@/assets/img/zwtp.png"
-                          alt="暂无图片"
-                        />
-                      </div> -->
-                    <div v-for="(imgItem, imgKey) in imgList" :key="imgKey">
+                  <div class="custom-value flex warp" style="text-align: center">
+                    <div v-for="(imgItem, imgKey) in item.img" :key="imgKey">
                       <img :src="imgItem" />
                     </div>
                   </div>
@@ -137,24 +131,7 @@ export default {
   mounted() {
     console.log("infoData", this.infoData);
     this.rateValue = this.infoData[0].damageDegree;
-    // console.log("rateValue", this.rateValue);
-    // TODO:后端返回数组处理数据
-    // this.imgList.push(
-    //   this.infoData[0].img1,
-    //   this.infoData[0].img2,
-    //   this.infoData[0].img3,
-    //   this.infoData[0].img4,
-    //   this.infoData[0].img5,
-    //   this.infoData[0].img6
-    // );
-    // this.handleimgList.push(
-    //   this.infoData[0].handleImg1,
-    //   this.infoData[0].handleImg2,
-    //   this.infoData[0].handleImg3,
-    //   this.infoData[0].handleImg4,
-    //   this.infoData[0].handleImg5,
-    //   this.infoData[0].handleImg6
-    // );
+
   },
   methods: {}
 };
